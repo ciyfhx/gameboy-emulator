@@ -15,15 +15,22 @@ class NOP : Opcode(0x00) {
 
 class LD1 : Opcode(0x01) {
     override fun execute(memory: Memory, registers: Registers) {
-        registers.B = memory.readNextByte()
-        registers.C = memory.readNextByte()
+        registers.B = memory.readNextByte().toInt()
+        registers.C = memory.readNextByte().toInt()
     }
 }
 
 class LD2 : Opcode(0x02) {
     override fun execute(memory: Memory, registers: Registers) {
-
-        registers.B = memory.readNextByte()
-        registers.C = memory.readNextByte()
+        val address = registers.getBC()
+        memory.write(address, registers.accumulator.toByte())
     }
 }
+class INC : Opcode(0x03) {
+    override fun execute(memory: Memory, registers: Registers) {
+        var data = registers.getBC()
+        data++
+        registers.setBC(data)
+    }
+}
+
