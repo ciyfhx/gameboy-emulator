@@ -15,8 +15,8 @@ class NOP : Opcode(0x00) {
 
 class LD_BC_D16 : Opcode(0x01) {
     override fun execute(memory: Memory, registers: Registers) {
-        registers.B = memory.readNextByte().toInt()
         registers.C = memory.readNextByte().toInt()
+        registers.B = memory.readNextByte().toInt()
     }
 }
 
@@ -147,3 +147,16 @@ class RRCA : Opcode(0x0F) {
     }
 }
 
+class STOP : Opcode(0x10) {
+    override fun execute(memory: Memory, registers: Registers) {
+        assert(memory.readNextByte().toInt() == 0x00)
+        //TODO("Check for STOP conditions")
+    }
+}
+
+class LD_DE_D16 : Opcode(0x11) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = memory.readNextByte().toInt()
+        registers.D = memory.readNextByte().toInt()
+    }
+}
