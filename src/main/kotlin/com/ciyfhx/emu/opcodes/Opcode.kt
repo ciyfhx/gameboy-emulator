@@ -160,3 +160,62 @@ class LD_DE_D16 : Opcode(0x11) {
         registers.D = memory.readNextByte().toInt()
     }
 }
+
+class LD_DE_A : Opcode(0x12) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val address = registers.getDE()
+        memory.write(address, registers.accumulator.toByte())
+    }
+}
+
+class INC_DE : Opcode(0x13) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.getDE()
+        val data = value + 1
+        registers.setDE(data)
+    }
+}
+
+class INC_D : Opcode(0x14) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.D
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        registers.D = data
+    }
+}
+
+class DEC_D : Opcode(0x15) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.D
+        val data = value - 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(value and 0x0F == 0x00)
+        registers.D = data
+    }
+}
+
+class LD_D_D8 : Opcode(0x16) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.D = memory.readNextByte().toInt()
+    }
+}
+
+class RLA : Opcode(0x17) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val carry = registers.getCarryFlag()
+        registers.accumulator = registers.accumulator shl 1
+        registers.accumulator = if(carry){
+            registers.accumulator or 1
+        }else{
+            registers.accumulator or 0
+        }
+        registers.setZeroFlag(false)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
+//        registers.setCarryFlag(carry == 0b1000_0000)
+    }
+}
