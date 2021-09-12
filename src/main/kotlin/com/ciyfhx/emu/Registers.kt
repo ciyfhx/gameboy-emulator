@@ -35,6 +35,24 @@ class Registers {
         C = value and 0x0F
     }
 
+    fun getDE(): Int {
+        return combineBytes(D.toByte(), E.toByte())
+    }
+
+    fun setDE(value: Int){
+        D = value and 0xF0
+        E = value and 0x0F
+    }
+
+    fun getHL(): Int {
+        return combineBytes(H.toByte(), L.toByte())
+    }
+
+    fun setHL(value: Int){
+        H = value and 0xF0
+        L = value and 0x0F
+    }
+
     fun setZeroFlag(set: Boolean){
         if(set){
             flag.add(Flag.ZERO)
