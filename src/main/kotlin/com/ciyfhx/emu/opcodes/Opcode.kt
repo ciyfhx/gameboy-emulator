@@ -219,3 +219,75 @@ class RLA : Opcode(0x17) {
 //        registers.setCarryFlag(carry == 0b1000_0000)
     }
 }
+
+class JR_S8 : Opcode(0x18) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val offset = memory.readNextByte()
+        registers.programCounter += offset
+    }
+}
+
+class ADD_HL_DE : Opcode(0x19) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.getHL() + registers.getDE()
+        val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
+        registers.setHL(value)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(carry)
+        registers.setCarryFlag(carry)
+    }
+}
+
+class LD_A : Opcode(0x1A) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.accumulator = memory.read(registers.getDE()).toInt()
+    }
+}
+
+class DEC_DE : Opcode(0x1B) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.setDE(registers.getDE() - 1)
+    }
+}
+
+class INC_E : Opcode(0x1C) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.E
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        registers.E = data
+    }
+}
+
+class DEC_E : Opcode(0x1D) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.E
+        val data = value - 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(value and 0x0F == 0x00)
+        registers.E = data
+    }
+}
+
+class LD_E_D8 : Opcode(0x1E) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.readNextByte()
+        registers.E = data.toInt()
+    }
+}
+
+class RRA : Opcode(0x1F) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val carry = if(registers.getCarryFlag()) 1 else 0
+        val a8 = registers.accumulator or 0b0000_0001
+        registers.accumulator = registers.accumulator shr 1
+        registers.accumulator = registers.accumulator or (carry shl 7)
+        registers.setZeroFlag(false)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
+        registers.setCarryFlag(a8 == 1)
+    }
+}
