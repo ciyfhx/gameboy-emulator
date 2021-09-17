@@ -4,7 +4,11 @@ class Memory(
     val registers: Registers
 ) {
 
-    private val memory = ByteArray(1000)
+    private val memory = ByteArray(65536)
+
+    fun copyByteArray(offset: Int, data: ByteArray){
+        System.arraycopy(data, 0, memory, offset, data.size)
+    }
 
     fun read(address: Int): Byte {
         return memory[address]

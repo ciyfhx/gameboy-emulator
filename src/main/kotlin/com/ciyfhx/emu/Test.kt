@@ -1,6 +1,11 @@
 package com.ciyfhx.emu
 
 fun main() {
+    val cpu = CPU()
+
+    //Copy bootrom
+    cpu.memory.copyByteArray(0, readBootRom())
+
     var last = System.currentTimeMillis()
     var counter = 0
     val clock = Clock{
@@ -15,6 +20,11 @@ fun main() {
         }
         counter++
 
+
+        //Run Cpu
+        cpu.fetch()
+        cpu.decode()
+        cpu.execute()
     }
     clock.start()
 }

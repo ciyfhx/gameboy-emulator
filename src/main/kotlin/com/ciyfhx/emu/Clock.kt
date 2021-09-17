@@ -1,5 +1,6 @@
 package com.ciyfhx.emu
 
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +23,12 @@ class Clock(
         if(running) throw IllegalStateException("Clock is already running")
         running = true
         val period = NANOSECOND / hz
-        executor.scheduleAtFixedRate(run, 0, period, TimeUnit.NANOSECONDS)
+        val future = executor.scheduleAtFixedRate(run, 0, period, TimeUnit.NANOSECONDS)
+        try {
+            future.get()
+        }catch (e: ExecutionException){
+            e.printStackTrace()
+        }
     }
 
     /**
