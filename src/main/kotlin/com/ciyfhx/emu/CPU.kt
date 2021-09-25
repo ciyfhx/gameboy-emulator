@@ -63,7 +63,11 @@ class CPU {
     }
 
     fun decode(){
-        decodedOpcode = registeredOpcodes[opcode]
+        try {
+            decodedOpcode = registeredOpcodes[opcode]
+        }catch(e: IndexOutOfBoundsException){
+            println("Unknown opcode 0x${opcode.toString(16)}")
+        }
     }
 
     fun execute(){

@@ -291,3 +291,46 @@ class RRA : Opcode(0x1F) {
         registers.setCarryFlag(a8 == 1)
     }
 }
+
+class JR_NZ_S8 : Opcode(0x20) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val s8 = memory.readNextByte()
+        if(registers.getZeroFlag()){
+            registers.programCounter += s8
+        }
+    }
+}
+
+class LD_HL_D16 : Opcode(0x21) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = memory.readNextByte().toInt()
+        registers.H = memory.readNextByte().toInt()
+    }
+}
+
+class LD_HL_A : Opcode(0x22) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.accumulator
+        memory.write(registers.getHL(), value.toByte())
+        registers.setHL(registers.getHL() + 1)
+    }
+}
+
+class INC_HL : Opcode(0x23) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.getHL()
+        val data = value + 1
+        registers.setHL(data)
+    }
+}
+
+class INC_H : Opcode(0x24) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.H
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        registers.H = data
+    }
+}
