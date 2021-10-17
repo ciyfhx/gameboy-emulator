@@ -53,6 +53,14 @@ class CPU {
             registeredOpcodes.add(DEC_E())
             registeredOpcodes.add(LD_E_D8())
             registeredOpcodes.add(RRA())
+            registeredOpcodes.add(JR_NZ_S8())
+            registeredOpcodes.add(LD_HL_D16())
+            registeredOpcodes.add(LD_HL_A())
+            registeredOpcodes.add(INC_HL())
+            registeredOpcodes.add(INC_H())
+            registeredOpcodes.add(DEC_H())
+            registeredOpcodes.add(LD_H_D8())
+            registeredOpcodes.add(DAA())
         }
 
     }

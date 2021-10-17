@@ -334,3 +334,42 @@ class INC_H : Opcode(0x24) {
         registers.H = data
     }
 }
+
+class DEC_H : Opcode(0x25) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.H
+        val data = value - 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(value and 0x0F == 0x00)
+        registers.H = data
+    }
+}
+
+class LD_H_D8 : Opcode(0x26) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = memory.readNextByte().toInt()
+    }
+}
+
+class DAA : Opcode(0x27) {
+    override fun execute(memory: Memory, registers: Registers) {
+        var data = registers.accumulator
+        var correction = 0
+        if(registers.getHalfCarryFlag() ||
+            (!registers.getSubtractFlag() && (data and 0x0F) > 0x09)){
+            correction = correction or 0x06
+        }
+        if(registers.getCarryFlag() ||
+            (!registers.getSubtractFlag() && (data and 0xFF) > 0x99)){
+            correction = correction or 0x60
+            registers.setCarryFlag(true)
+        }
+        data += if(registers.getSubtractFlag()) -correction else correction
+        val carry = data and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
+        registers.accumulator = data
+        registers.setZeroFlag(data == 0)
+        registers.setHalfCarryFlag(false)
+        registers.setCarryFlag(carry)
+    }
+}
