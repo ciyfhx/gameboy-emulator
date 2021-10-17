@@ -47,7 +47,7 @@ class CPU {
             registeredOpcodes.add(RLA())
             registeredOpcodes.add(JR_S8())
             registeredOpcodes.add(ADD_HL_DE())
-            registeredOpcodes.add(LD_A())
+            registeredOpcodes.add(LD_A_DE())
             registeredOpcodes.add(DEC_DE())
             registeredOpcodes.add(INC_E())
             registeredOpcodes.add(DEC_E())
@@ -61,6 +61,10 @@ class CPU {
             registeredOpcodes.add(DEC_H())
             registeredOpcodes.add(LD_H_D8())
             registeredOpcodes.add(DAA())
+            registeredOpcodes.add(JR_Z_S8())
+            registeredOpcodes.add(ADD_HL_HL())
+            registeredOpcodes.add(LD_A_HL_PLUS())
+            registeredOpcodes.add(DEC_HL())
         }
 
     }

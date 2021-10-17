@@ -238,7 +238,7 @@ class ADD_HL_DE : Opcode(0x19) {
     }
 }
 
-class LD_A : Opcode(0x1A) {
+class LD_A_DE : Opcode(0x1A) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = memory.read(registers.getDE()).toInt()
     }
@@ -371,5 +371,39 @@ class DAA : Opcode(0x27) {
         registers.setZeroFlag(data == 0)
         registers.setHalfCarryFlag(false)
         registers.setCarryFlag(carry)
+    }
+}
+
+class JR_Z_S8 : Opcode(0x28) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val offset = memory.readNextByte()
+        if(registers.getZeroFlag()){
+            registers.programCounter += offset
+        }
+    }
+}
+
+class ADD_HL_HL : Opcode(0x29) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.getHL() + registers.getHL()
+        val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
+        registers.setHL(value)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(carry)
+        registers.setCarryFlag(carry)
+    }
+}
+
+class LD_A_HL_PLUS : Opcode(0x2A) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.accumulator = memory.read(registers.getHL()).toInt()
+        registers.setHL(registers.getHL() + 1)
+    }
+}
+
+class DEC_HL : Opcode(0x2B) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.accumulator = memory.read(registers.getHL()).toInt()
+        registers.setHL(registers.getHL() + 1)
     }
 }
