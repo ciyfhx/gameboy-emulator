@@ -455,6 +455,7 @@ class JR_NC_S8 : Opcode(0x30) {
 
 class LD_SP_D16 : Opcode(0x31) {
     override fun execute(memory: Memory, registers: Registers) {
-        registers.stackPointer = memory.readNextByte().toInt() or (memory.readNextByte().toInt() shl 8)
+        registers.stackPointer = memory.readNextByte().toInt()
+        registers.stackPointer = registers.stackPointer or memory.readNextByte().toInt() shl 8
     }
 }

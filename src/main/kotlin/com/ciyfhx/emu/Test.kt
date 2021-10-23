@@ -4,7 +4,7 @@ fun main() {
     val cpu = CPU()
 
     //Copy bootrom
-    cpu.memory.copyByteArray(0, readBootRom())
+    cpu.memory.copyByteArray(0, readBootRom()!!)
 
     var last = System.currentTimeMillis()
     var counter = 0
