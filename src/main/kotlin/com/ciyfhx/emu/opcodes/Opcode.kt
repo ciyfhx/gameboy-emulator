@@ -295,7 +295,7 @@ class RRA : Opcode(0x1F) {
 class JR_NZ_S8 : Opcode(0x20) {
     override fun execute(memory: Memory, registers: Registers) {
         val s8 = memory.readNextByte()
-        if(registers.getZeroFlag()){
+        if(!registers.getZeroFlag()){
             registers.programCounter += s8
         }
     }
@@ -405,5 +405,56 @@ class DEC_HL : Opcode(0x2B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = memory.read(registers.getHL()).toInt()
         registers.setHL(registers.getHL() + 1)
+    }
+}
+
+class INC_L : Opcode(0x2C) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.L
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        registers.L = data
+    }
+}
+
+
+class DEC_L : Opcode(0x2D) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.L
+        val data = value - 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(value and 0x0F == 0x00)
+        registers.L = data
+    }
+}
+
+class LD_L_D8 : Opcode(0x2E) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.readNextByte()
+        registers.L = data.toInt()
+    }
+}
+
+class CPL : Opcode(0x2F) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.accumulator = registers.accumulator.inv()
+    }
+}
+
+class JR_NC_S8 : Opcode(0x30) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val s8 = memory.readNextByte()
+        if(!registers.getCarryFlag()){
+            registers.programCounter += s8
+        }
+    }
+}
+
+class LD_SP_D16 : Opcode(0x31) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.stackPointer = memory.readNextByte().toInt() or (memory.readNextByte().toInt() shl 8)
     }
 }

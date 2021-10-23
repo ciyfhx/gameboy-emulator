@@ -43,6 +43,7 @@ class CPU {
             registeredOpcodes.add(LD_DE_A())
             registeredOpcodes.add(INC_DE())
             registeredOpcodes.add(INC_D())
+            registeredOpcodes.add(DEC_D())
             registeredOpcodes.add(LD_D_D8())
             registeredOpcodes.add(RLA())
             registeredOpcodes.add(JR_S8())
@@ -65,6 +66,12 @@ class CPU {
             registeredOpcodes.add(ADD_HL_HL())
             registeredOpcodes.add(LD_A_HL_PLUS())
             registeredOpcodes.add(DEC_HL())
+            registeredOpcodes.add(INC_L())
+            registeredOpcodes.add(DEC_L())
+            registeredOpcodes.add(LD_L_D8())
+            registeredOpcodes.add(CPL())
+            registeredOpcodes.add(JR_NC_S8())
+            registeredOpcodes.add(LD_SP_D16())
         }
 
     }
@@ -77,6 +84,7 @@ class CPU {
     fun decode(){
         try {
             decodedOpcode = registeredOpcodes[opcode]
+            println("Decoded: 0x${opcode.toString(16)} $decodedOpcode")
         }catch(e: IndexOutOfBoundsException){
             println("Unknown opcode 0x${opcode.toString(16)}")
         }
