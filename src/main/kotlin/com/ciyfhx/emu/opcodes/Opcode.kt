@@ -308,7 +308,7 @@ class LD_HL_D16 : Opcode(0x21) {
     }
 }
 
-class LD_HL_A : Opcode(0x22) {
+class LD_HL_P_A : Opcode(0x22) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.accumulator
         memory.write(registers.getHL(), value.toByte())
@@ -457,5 +457,33 @@ class LD_SP_D16 : Opcode(0x31) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.stackPointer = memory.readNextByte().toInt()
         registers.stackPointer = registers.stackPointer or memory.readNextByte().toInt() shl 8
+    }
+}
+
+class LD_HL_S_A : Opcode(0x32) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.accumulator
+        memory.write(registers.getHL(), value.toByte())
+        registers.setHL(registers.getHL() - 1)
+    }
+}
+
+class INC_SP : Opcode(0x33) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val value = registers.getHL()
+        val data = value + 1
+        registers.stackPointer = data
+    }
+}
+
+class INC_P_HL : Opcode(0x34) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val pointer = registers.getHL()
+        val value = memory.read(pointer).toInt()
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        memory.write(pointer, data.toByte())
     }
 }
