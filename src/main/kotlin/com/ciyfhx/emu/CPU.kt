@@ -75,6 +75,10 @@ class CPU {
             registeredOpcodes.add(LD_HL_S_A())
             registeredOpcodes.add(INC_SP())
             registeredOpcodes.add(INC_P_HL())
+            registeredOpcodes.add(DEC_P_HL())
+            registeredOpcodes.add(LD_P_HL_D8())
+            registeredOpcodes.add(SCF())
+            registeredOpcodes.add(JR_C_S8())
         }
 
     }

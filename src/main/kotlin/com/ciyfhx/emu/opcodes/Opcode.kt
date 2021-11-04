@@ -487,3 +487,39 @@ class INC_P_HL : Opcode(0x34) {
         memory.write(pointer, data.toByte())
     }
 }
+
+class DEC_P_HL : Opcode(0x35) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val pointer = registers.getHL()
+        val value = memory.read(pointer).toInt()
+        val data = value + 1 and 0xFF
+        registers.setZeroFlag(data == 0)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(value and 0x0F == 0x0F)
+        memory.write(pointer, data.toByte())
+    }
+}
+class LD_P_HL_D8 : Opcode(0x36) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.readNextByte()
+        val pointer = registers.getHL()
+        memory.write(pointer, data)
+    }
+}
+
+class SCF : Opcode(0x37) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
+        registers.setCarryFlag(true)
+    }
+}
+
+class JR_C_S8 : Opcode(0x38) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val offset = memory.readNextByte()
+        if(registers.getCarryFlag()){
+            registers.programCounter += offset
+        }
+    }
+}
