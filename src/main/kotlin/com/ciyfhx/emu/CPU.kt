@@ -2,6 +2,7 @@ package com.ciyfhx.emu
 
 import com.ciyfhx.emu.opcodes.*
 import com.ciyfhx.emu.opcodes.Opcode
+import java.util.*
 
 class CPU {
 
@@ -9,7 +10,7 @@ class CPU {
     val memory = Memory(registers)
 
     private var opcode: Int = 0
-    private var decodedOpcode: Opcode = NOP()
+    private var decodedOpcode: Opcode = NOP
 
     init {
         //Register all the opcodes
@@ -22,7 +23,7 @@ class CPU {
         @JvmStatic
         fun opcodes(){
             //Make sure the opcodes are in order
-            registeredOpcodes.add(NOP())
+            registeredOpcodes.add(NOP)
             registeredOpcodes.add(LD_BC_D16())
             registeredOpcodes.add(LD_BC_A())
             registeredOpcodes.add(INC_BC())
@@ -79,6 +80,34 @@ class CPU {
             registeredOpcodes.add(LD_P_HL_D8())
             registeredOpcodes.add(SCF())
             registeredOpcodes.add(JR_C_S8())
+            registeredOpcodes.add(ADD_HL_SP())
+            registeredOpcodes.add(LD_A_HL_MINUS())
+            registeredOpcodes.add(DEC_SP())
+            registeredOpcodes.add(INC_A())
+            registeredOpcodes.add(DEC_A())
+            registeredOpcodes.add(LD_A_D8())
+            registeredOpcodes.add(CCF())
+            registeredOpcodes.add(LD_B_B())
+            registeredOpcodes.add(LD_B_C())
+            registeredOpcodes.add(LD_B_D())
+            registeredOpcodes.add(LD_B_E())
+            registeredOpcodes.add(LD_B_H())
+            registeredOpcodes.add(LD_B_L())
+            registeredOpcodes.add(LD_B_P_HL())
+            registeredOpcodes.add(LD_B_A())
+            registeredOpcodes.add(LD_C_B())
+            registeredOpcodes.add(LD_C_C())
+            registeredOpcodes.add(LD_C_D())
+            registeredOpcodes.add(LD_C_E())
+            registeredOpcodes.add(LD_C_H())
+            registeredOpcodes.add(LD_C_L())
+            registeredOpcodes.add(LD_C_P_HL())
+            registeredOpcodes.add(LD_C_A())
+            registeredOpcodes.add(LD_D_B())
+            registeredOpcodes.add(LD_D_C())
+            registeredOpcodes.add(LD_D_D())
+            registeredOpcodes.add(LD_D_E())
+            registeredOpcodes.add(LD_D_H())
         }
 
     }
@@ -91,14 +120,18 @@ class CPU {
     fun decode(){
         try {
             decodedOpcode = registeredOpcodes[opcode]
-            println("Decoded: 0x${opcode.toString(16)} $decodedOpcode")
+            println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
         }catch(e: IndexOutOfBoundsException){
-            println("Unknown opcode 0x${opcode.toString(16)}")
+            println("Unknown opcode 0x${opcode.toHexCode()}")
         }
     }
 
     fun execute(){
         decodedOpcode.execute(memory, registers)
+        decodedOpcode = NOP
     }
 
+}
+fun Int.toHexCode(): String{
+    return this.toUByte().toString(16).uppercase(Locale.getDefault())
 }
