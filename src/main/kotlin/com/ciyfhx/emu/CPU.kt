@@ -11,7 +11,7 @@ class CPU {
 
     var halt = false
 
-    private var opcode: Int = 0
+    private var opcode: UInt = 0u
     private var decodedOpcode: Opcode = NOP
 
     var last = System.currentTimeMillis()
@@ -192,12 +192,12 @@ class CPU {
     }
 
     private fun fetch(){
-        opcode = memory.readNextByte().toInt()
+        opcode = memory.readNextByte().toUInt()
     }
 
     private fun decode(){
         try {
-            decodedOpcode = registeredOpcodes[opcode]
+            decodedOpcode = registeredOpcodes[opcode.toInt()]
             println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
         }catch(e: IndexOutOfBoundsException){
             println("Unknown opcode 0x${opcode.toHexCode()}")
@@ -210,6 +210,6 @@ class CPU {
     }
 
 }
-fun Int.toHexCode(): String{
+fun UInt.toHexCode(): String{
     return this.toUByte().toString(16).uppercase(Locale.getDefault())
 }
