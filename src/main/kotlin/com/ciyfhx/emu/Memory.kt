@@ -6,28 +6,22 @@ class Memory(
 
     private val memory = ByteArray(65536)
 
-    fun copyByteArray(offset: Int, data: ByteArray){
-        System.arraycopy(data, 0, memory, offset, data.size)
+    fun copyByteArray(offset: UInt, data: ByteArray){
+        System.arraycopy(data, 0, memory, offset.toInt(), data.size)
     }
 
-    fun read(address: Int): Byte {
-        return memory[address]
+    fun read(address: UInt): UByte {
+        return memory[address.toInt()].toUByte()
     }
 
-    fun write(address: Int, value: Byte){
-        memory[address] = value
+    fun write(address: UInt, value: UByte){
+        memory[address.toInt()] = value.toByte()
     }
 
-    fun readNextByte(): Byte{
+    fun readNextByte(): UByte{
         val byte = read(registers.programCounter)
         registers.programCounter++
         return byte
-    }
-
-    fun readNextShort(): Int{
-        val byte1 = readNextByte()
-        val byte2 = readNextByte()
-        return byte1.toInt() shl 8 or byte2.toInt()
     }
 
 }

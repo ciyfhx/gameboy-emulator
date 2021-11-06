@@ -11,46 +11,46 @@ enum class Flag {
  * [CPU] Registers
  */
 class Registers {
-    var accumulator: Int = 0
+    var accumulator: UInt = 0u
     var flag = EnumSet.noneOf(Flag::class.java)
 
-    var B: Int = 0
-    var C: Int = 0
+    var B: UInt = 0u
+    var C: UInt = 0u
 
-    var D: Int = 0
-    var E: Int = 0
+    var D: UInt = 0u
+    var E: UInt = 0u
 
-    var H: Int = 0
-    var L: Int = 0
+    var H: UInt = 0u
+    var L: UInt = 0u
 
-    var stackPointer: Int = 0
-    var programCounter: Int = 0
+    var stackPointer: UInt = 0u
+    var programCounter: UInt = 0u
 
-    fun getBC(): Int {
-        return combineBytes(B.toByte(), C.toByte())
+    fun getBC(): UInt {
+        return combineBytes(B.toUByte(), C.toUByte())
     }
 
-    fun setBC(value: Int){
-        B = value and 0xF0
-        C = value and 0x0F
+    fun setBC(value: UInt){
+        B = value and 0xF0u
+        C = value and 0x0Fu
     }
 
-    fun getDE(): Int {
-        return combineBytes(D.toByte(), E.toByte())
+    fun getDE(): UInt {
+        return combineBytes(D.toUByte(), E.toUByte())
     }
 
-    fun setDE(value: Int){
-        D = value and 0xF0
-        E = value and 0x0F
+    fun setDE(value: UInt){
+        D = value and 0xF0u
+        E = value and 0x0Fu
     }
 
-    fun getHL(): Int {
-        return combineBytes(H.toByte(), L.toByte())
+    fun getHL(): UInt {
+        return combineBytes(H.toUByte(), L.toUByte())
     }
 
-    fun setHL(value: Int){
-        H = value and 0xF0
-        L = value and 0x0F
+    fun setHL(value: UInt){
+        H = value and 0xF0u
+        L = value and 0x0Fu
     }
 
     fun setZeroFlag(set: Boolean){

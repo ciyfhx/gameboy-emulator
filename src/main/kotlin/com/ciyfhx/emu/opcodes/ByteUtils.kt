@@ -1,5 +1,5 @@
 package com.ciyfhx.emu.opcodes
 
-fun combineBytes(hob: Byte, lob: Byte): Int{
-    return (hob.toInt() shr 8 or lob.toInt())
+fun combineBytes(hob: UByte, lob: UByte): UInt{
+    return (hob.toUInt() shr 8) or lob.toUInt()
 }
