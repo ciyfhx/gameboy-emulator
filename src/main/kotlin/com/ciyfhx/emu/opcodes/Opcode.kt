@@ -1034,6 +1034,146 @@ object ADC_A_B : Opcode(0x88) {
     }
 }
 
+object ADC_A_C : Opcode(0x89) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.C)
+    }
+}
+
+object ADC_A_D : Opcode(0x8A) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.D)
+    }
+}
+
+object ADC_A_E : Opcode(0x8B) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.E)
+    }
+}
+
+object ADC_A_H : Opcode(0x8C) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.H)
+    }
+}
+
+object ADC_A_L : Opcode(0x8D) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.D)
+    }
+}
+
+object ADC_A_P_HL : Opcode(0x8E) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.adc(registers, registers.accumulator, data.toUInt())
+    }
+}
+
+object ADC_A_A : Opcode(0x8F) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object SUB_B : Opcode(0x90) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.B)
+    }
+}
+
+object SUB_C : Opcode(0x91) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.C)
+    }
+}
+
+object SUB_D : Opcode(0x92) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.D)
+    }
+}
+
+object SUB_E : Opcode(0x93) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.E)
+    }
+}
+
+object SUB_H : Opcode(0x94) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.H)
+    }
+}
+
+object SUB_L : Opcode(0x95) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.L)
+    }
+}
+
+object SUB_P_HL : Opcode(0x96) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.sub(registers, registers.accumulator, data.toUInt())
+    }
+}
+
+object SUB_A : Opcode(0x97) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sub(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object SBC_A_B : Opcode(0x98) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.B)
+    }
+}
+
+object SBC_A_C : Opcode(0x99) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.C)
+    }
+}
+
+object SBC_A_D : Opcode(0x9A) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.D)
+    }
+}
+
+object SBC_A_E : Opcode(0x9B) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.E)
+    }
+}
+
+object SBC_A_H : Opcode(0x9C) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.H)
+    }
+}
+
+object SBC_A_L : Opcode(0x9D) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.L)
+    }
+}
+
+object SBC_A_P_HL : Opcode(0x9E) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, data.toUInt())
+    }
+}
+
+object SBC_A_A : Opcode(0x9F) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, registers.accumulator)
+    }
+}
 
 object ALU {
     fun add(registers: Registers, operand1: UInt, operand2: UInt): UInt{
@@ -1042,7 +1182,7 @@ object ALU {
 
         registers.setZeroFlag(result == 0u)
         registers.setSubtractFlag(false)
-        registers.setHalfCarryFlag((operand1 and 0x0Fu) + (operand2 and 0x0Fu) > 0x0Fu)
+        registers.setHalfCarryFlag((operand1.toUByte() + operand2.toUByte()) > 0x0Fu)
         registers.setCarryFlag(carry)
 
         return result
@@ -1052,5 +1192,23 @@ object ALU {
         return if(registers.getCarryFlag()){
             add(registers, operand1, operand2 + 1u)
         }else add(registers, operand1, operand2)
+    }
+
+    fun sub(registers: Registers, operand1: UInt, operand2: UInt): UInt{
+        val result = operand1 - operand2
+        val carry = operand2 > operand1
+
+        registers.setZeroFlag(result == 0u)
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(operand1.toUByte() < operand2.toUByte())
+        registers.setCarryFlag(carry)
+
+        return result
+    }
+
+    fun sbc(registers: Registers, operand1: UInt, operand2: UInt): UInt {
+        return if(registers.getCarryFlag()){
+            sub(registers, operand1, operand2 - 1u)
+        }else sub(registers, operand1, operand2)
     }
 }
