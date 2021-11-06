@@ -1,5 +1,7 @@
 package com.ciyfhx.emu
 
+import com.ciyfhx.emu.opcodes.combineBytes
+
 class Memory(
     val registers: Registers
 ) {
@@ -22,6 +24,12 @@ class Memory(
         val byte = read(registers.programCounter)
         registers.programCounter++
         return byte
+    }
+
+    fun readNextShort(): UShort{
+        val lob = readNextByte()
+        val hob = readNextByte()
+        return combineBytes(hob, lob).toUShort()
     }
 
 }

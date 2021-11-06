@@ -1175,6 +1175,385 @@ object SBC_A_A : Opcode(0x9F) {
     }
 }
 
+object AND_B : Opcode(0xA0) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.B, registers.accumulator)
+    }
+}
+
+object AND_C : Opcode(0xA1) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.C, registers.accumulator)
+    }
+}
+
+object AND_D : Opcode(0xA2) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.D, registers.accumulator)
+    }
+}
+
+object AND_E : Opcode(0xA3) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.E, registers.accumulator)
+    }
+}
+
+object AND_H : Opcode(0xA4) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.H, registers.accumulator)
+    }
+}
+
+object AND_L : Opcode(0xA5) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.L, registers.accumulator)
+    }
+}
+
+object AND_P_HL : Opcode(0xA6) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.and(registers, data.toUInt(), registers.accumulator)
+    }
+}
+
+object AND_A : Opcode(0xA7) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.and(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object XOR_B : Opcode(0xA8) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.B, registers.accumulator)
+    }
+}
+
+object XOR_C : Opcode(0xA9) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.C, registers.accumulator)
+    }
+}
+
+object XOR_D : Opcode(0xAA) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.D, registers.accumulator)
+    }
+}
+
+object XOR_E : Opcode(0xAB) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.E, registers.accumulator)
+    }
+}
+
+object XOR_H : Opcode(0xAC) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.H, registers.accumulator)
+    }
+}
+
+object XOR_L : Opcode(0xAD) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.L, registers.accumulator)
+    }
+}
+
+object XOR_P_HL : Opcode(0xAE) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.xor(registers, data.toUInt(), registers.accumulator)
+    }
+}
+
+object XOR_A : Opcode(0xAF) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.xor(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object OR_B : Opcode(0xB0) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.B, registers.accumulator)
+    }
+}
+
+object OR_C : Opcode(0xB1) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.C, registers.accumulator)
+    }
+}
+
+object OR_D: Opcode(0xB2) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.D, registers.accumulator)
+    }
+}
+
+object OR_E: Opcode(0xB3) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.E, registers.accumulator)
+    }
+}
+
+object OR_H: Opcode(0xB4) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.H, registers.accumulator)
+    }
+}
+
+object OR_L: Opcode(0xB5) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.L, registers.accumulator)
+    }
+}
+
+object OR_P_HL: Opcode(0xB6) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.accumulator = ALU.or(registers, data.toUInt(), registers.accumulator)
+    }
+}
+
+object OR_A: Opcode(0xB7) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.accumulator = ALU.or(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object CP_B: Opcode(0xB8) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.B)
+    }
+}
+
+object CP_C: Opcode(0xB9) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.C)
+    }
+}
+
+object CP_D: Opcode(0xBA) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.D)
+    }
+}
+
+object CP_E: Opcode(0xBB) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.E)
+    }
+}
+
+object CP_H: Opcode(0xBC) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.H)
+    }
+}
+
+object CP_L: Opcode(0xBD) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.L)
+    }
+}
+
+object CP_P_HL: Opcode(0xBE) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        ALU.sub(registers, registers.accumulator, data.toUInt())
+    }
+}
+
+object CP_A: Opcode(0xBF) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        ALU.sub(registers, registers.accumulator, registers.accumulator)
+    }
+}
+
+object RET_NZ: Opcode(0xC0) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(!registers.getZeroFlag()){
+            val lob = memory.read(registers.stackPointer++)
+            val hob = memory.read(registers.stackPointer++)
+            registers.programCounter = combineBytes(hob, lob)
+        }
+    }
+}
+
+object POP_BC: Opcode(0xC1) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.C = memory.read(registers.stackPointer++).toUInt()
+        registers.B = memory.read(registers.stackPointer++).toUInt()
+    }
+}
+
+object JP_NZ_A16: Opcode(0xC2) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(!registers.getZeroFlag()){
+            registers.programCounter = memory.readNextShort().toUInt()
+        }
+    }
+}
+
+object JP_A16: Opcode(0xC3) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.programCounter = memory.readNextShort().toUInt()
+    }
+}
+
+object CALL_NZ_A16: Opcode(0xC4) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
+        if(!registers.getZeroFlag()){
+            registers.stackPointer--
+            memory.write(registers.stackPointer--, registers.programCounter.getHob())
+            memory.write(registers.stackPointer, registers.programCounter.getLob())
+            registers.programCounter = address.toUInt()
+        }
+    }
+}
+
+object PUSH_BC: Opcode(0xC5) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.B.toUByte())
+        memory.write(registers.stackPointer, registers.C.toUByte())
+    }
+}
+
+object ADD_A_D8: Opcode(0xC6) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.readNextByte()
+        registers.accumulator = ALU.add(registers, data.toUInt(), registers.accumulator)
+    }
+}
+
+object RST_0: Opcode(0xC7) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.programCounter.getHob())
+        memory.write(registers.stackPointer, registers.programCounter.getLob())
+        registers.programCounter = 0u
+    }
+}
+
+object RET_Z: Opcode(0xC8) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(registers.getZeroFlag()){
+            val lob = memory.read(registers.stackPointer++)
+            val hob = memory.read(registers.stackPointer++)
+            registers.programCounter = combineBytes(hob, lob)
+        }
+    }
+}
+
+object RET: Opcode(0xC9) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val lob = memory.read(registers.stackPointer++)
+        val hob = memory.read(registers.stackPointer++)
+        registers.programCounter = combineBytes(hob, lob)
+    }
+}
+
+object JP_Z_A16: Opcode(0xCA) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(registers.getZeroFlag()){
+            registers.programCounter = memory.readNextShort().toUInt()
+        }
+    }
+}
+
+object CB: Opcode(0xCB) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val opcode = 0xCB00u or memory.readNextByte().toUInt()
+
+    }
+}
+
+object CALL_Z_A16: Opcode(0xCC) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
+        if(registers.getZeroFlag()){
+            registers.stackPointer--
+            memory.write(registers.stackPointer--, registers.programCounter.getHob())
+            memory.write(registers.stackPointer, registers.programCounter.getLob())
+            registers.programCounter = address.toUInt()
+        }
+    }
+}
+
+object CALL_A16: Opcode(0xCD) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.programCounter.getHob())
+        memory.write(registers.stackPointer, registers.programCounter.getLob())
+        registers.programCounter = address.toUInt()
+    }
+}
+
+object ADC_A_D8: Opcode(0xCE) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val data = memory.readNextByte()
+        registers.accumulator = ALU.adc(registers, registers.accumulator, data.toUInt())
+    }
+}
+
+object RST_1: Opcode(0xCF) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.programCounter.getHob())
+        memory.write(registers.stackPointer, registers.programCounter.getLob())
+        registers.programCounter = 0x08u
+    }
+}
+
+object RET_NC: Opcode(0xD0) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(!registers.getCarryFlag()){
+            val lob = memory.read(registers.stackPointer++)
+            val hob = memory.read(registers.stackPointer++)
+            registers.programCounter = combineBytes(hob, lob)
+        }
+    }
+}
+
+object POP_DE: Opcode(0xD1) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.E = memory.read(registers.stackPointer++).toUInt()
+        registers.D = memory.read(registers.stackPointer++).toUInt()
+    }
+}
+
+object JP_NC_A16: Opcode(0xD2) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        if(!registers.getCarryFlag()){
+            registers.programCounter = memory.readNextShort().toUInt()
+        }
+    }
+}
+
+object CALL_NC_A16: Opcode(0xD4) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
+        if(!registers.getCarryFlag()){
+            registers.stackPointer--
+            memory.write(registers.stackPointer--, registers.programCounter.getHob())
+            memory.write(registers.stackPointer, registers.programCounter.getLob())
+            registers.programCounter = address.toUInt()
+        }
+    }
+}
+
+object PUSH_DE: Opcode(0xD5) {
+    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.D.toUByte())
+        memory.write(registers.stackPointer, registers.E.toUByte())
+    }
+}
+
 object ALU {
     fun add(registers: Registers, operand1: UInt, operand2: UInt): UInt{
         val result = operand1 + operand2
@@ -1211,4 +1590,38 @@ object ALU {
             sub(registers, operand1, operand2 - 1u)
         }else sub(registers, operand1, operand2)
     }
+
+    fun and(registers: Registers, operand1: UInt, operand2: UInt): UInt{
+        val result = operand1 and operand2
+
+        registers.setZeroFlag(result == 0u)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(true)
+        registers.setCarryFlag(false)
+
+        return result
+    }
+
+    fun xor(registers: Registers, operand1: UInt, operand2: UInt): UInt{
+        val result = operand1 xor operand2
+
+        registers.setZeroFlag(result == 0u)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
+        registers.setCarryFlag(false)
+
+        return result
+    }
+
+    fun or(registers: Registers, operand1: UInt, operand2: UInt): UInt{
+        val result = operand1 or operand2
+
+        registers.setZeroFlag(result == 0u)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
+        registers.setCarryFlag(false)
+
+        return result
+    }
+
 }

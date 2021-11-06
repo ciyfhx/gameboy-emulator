@@ -209,6 +209,63 @@ class CPU {
             registeredOpcodes.add(SBC_A_L)
             registeredOpcodes.add(SBC_A_P_HL)
             registeredOpcodes.add(SBC_A_A)
+            registeredOpcodes.add(AND_B)
+            registeredOpcodes.add(AND_C)
+            registeredOpcodes.add(AND_D)
+            registeredOpcodes.add(AND_E)
+            registeredOpcodes.add(AND_H)
+            registeredOpcodes.add(AND_L)
+            registeredOpcodes.add(AND_P_HL)
+            registeredOpcodes.add(AND_A)
+            registeredOpcodes.add(XOR_B)
+            registeredOpcodes.add(XOR_C)
+            registeredOpcodes.add(XOR_D)
+            registeredOpcodes.add(XOR_E)
+            registeredOpcodes.add(XOR_H)
+            registeredOpcodes.add(XOR_L)
+            registeredOpcodes.add(XOR_P_HL)
+            registeredOpcodes.add(XOR_A)
+            registeredOpcodes.add(OR_B)
+            registeredOpcodes.add(OR_C)
+            registeredOpcodes.add(OR_D)
+            registeredOpcodes.add(OR_E)
+            registeredOpcodes.add(OR_H)
+            registeredOpcodes.add(OR_L)
+            registeredOpcodes.add(OR_P_HL)
+            registeredOpcodes.add(OR_A)
+            registeredOpcodes.add(CP_B)
+            registeredOpcodes.add(CP_C)
+            registeredOpcodes.add(CP_D)
+            registeredOpcodes.add(CP_E)
+            registeredOpcodes.add(CP_H)
+            registeredOpcodes.add(CP_L)
+            registeredOpcodes.add(CP_P_HL)
+            registeredOpcodes.add(CP_A)
+            registeredOpcodes.add(RET_NZ)
+            registeredOpcodes.add(POP_BC)
+            registeredOpcodes.add(JP_NZ_A16)
+            registeredOpcodes.add(JP_A16)
+            registeredOpcodes.add(CALL_NZ_A16)
+            registeredOpcodes.add(PUSH_BC)
+            registeredOpcodes.add(ADD_A_D8)
+            registeredOpcodes.add(RST_0)
+            registeredOpcodes.add(RET_Z)
+            registeredOpcodes.add(RET)
+            registeredOpcodes.add(JP_Z_A16)
+            registeredOpcodes.add(CB)
+            registeredOpcodes.add(CALL_Z_A16)
+            registeredOpcodes.add(CALL_A16)
+            registeredOpcodes.add(ADC_A_D8)
+            registeredOpcodes.add(RST_1)
+            registeredOpcodes.add(RET_NC)
+            registeredOpcodes.add(POP_DE)
+            registeredOpcodes.add(JP_NC_A16)
+
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(CALL_NC_A16)
+            registeredOpcodes.add(PUSH_DE)
+
         }
 
     }
@@ -241,7 +298,4 @@ class CPU {
         decodedOpcode = NOP
     }
 
-}
-fun UInt.toHexCode(): String{
-    return this.toUByte().toString(16).uppercase(Locale.getDefault())
 }
