@@ -711,3 +711,169 @@ object LD_D_H : Opcode(0x54) {
         registers.D = registers.H
     }
 }
+
+object LD_D_L : Opcode(0x55) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.D = registers.L
+    }
+}
+
+object LD_D_P_HL : Opcode(0x56) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.D = data.toInt()
+    }
+}
+
+object LD_D_A : Opcode(0x57) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.D = registers.accumulator
+    }
+}
+
+object LD_E_B : Opcode(0x58) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.B
+    }
+}
+
+object LD_E_C : Opcode(0x59) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.C
+    }
+}
+
+object LD_E_D : Opcode(0x5A) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.D
+    }
+}
+
+object LD_E_E : Opcode(0x5B) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.E
+    }
+}
+
+object LD_E_H : Opcode(0x5C) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.H
+    }
+}
+
+object LD_E_L : Opcode(0x5D) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.L
+    }
+}
+
+object LD_E_P_HL : Opcode(0x5E) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.E = data.toInt()
+    }
+}
+
+object LD_E_A : Opcode(0x5F) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.E = registers.accumulator
+    }
+}
+
+object LD_H_B : Opcode(0x60) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.B
+    }
+}
+
+object LD_H_C : Opcode(0x61) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.C
+    }
+}
+
+object LD_H_D : Opcode(0x62) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.D
+    }
+}
+
+object LD_H_E : Opcode(0x63) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.E
+    }
+}
+
+object LD_H_H : Opcode(0x64) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.H
+    }
+}
+
+object LD_H_L : Opcode(0x65) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.L
+    }
+}
+
+object LD_H_P_HL : Opcode(0x66) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.setHL(data.toInt())
+    }
+}
+
+object LD_H_A : Opcode(0x67) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.H = registers.accumulator
+    }
+}
+
+object LD_L_B : Opcode(0x68) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.B
+    }
+}
+
+object LD_L_C : Opcode(0x69) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.C
+    }
+}
+
+object LD_L_D : Opcode(0x6A) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.D
+    }
+}
+
+object LD_L_E : Opcode(0x6B) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.E
+    }
+}
+
+object LD_L_H : Opcode(0x6C) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.H
+    }
+}
+
+object LD_L_L : Opcode(0x6D) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.L
+    }
+}
+
+object LD_L_P_HL : Opcode(0x6E) {
+    override fun execute(memory: Memory, registers: Registers) {
+        val data = memory.read(registers.getHL())
+        registers.L = data.toInt()
+    }
+}
+
+object LD_L_A : Opcode(0x6F) {
+    override fun execute(memory: Memory, registers: Registers) {
+        registers.L = registers.accumulator
+    }
+}
