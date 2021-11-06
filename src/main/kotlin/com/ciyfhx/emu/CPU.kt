@@ -9,8 +9,34 @@ class CPU {
     val registers = Registers()
     val memory = Memory(registers)
 
+    var halt = false
+
     private var opcode: Int = 0
     private var decodedOpcode: Opcode = NOP
+
+    var last = System.currentTimeMillis()
+    var counter = 0
+    private val systemClock: Clock = Clock{
+        val now = System.currentTimeMillis()
+        val diff = now - last
+
+        //One second has passed
+        if(diff >= 1000){
+            println("Hz: $counter")
+            last = now
+            counter = 0
+        }
+        counter++
+
+
+        //Run Cpu
+        if(!halt){
+            fetch()
+            decode()
+            execute()
+        }
+    }
+
 
     init {
         //Register all the opcodes
@@ -135,16 +161,41 @@ class CPU {
             registeredOpcodes.add(LD_L_L)
             registeredOpcodes.add(LD_L_P_HL)
             registeredOpcodes.add(LD_L_A)
+            registeredOpcodes.add(LD_P_HL_B)
+            registeredOpcodes.add(LD_P_HL_C)
+            registeredOpcodes.add(LD_P_HL_D)
+            registeredOpcodes.add(LD_P_HL_E)
+            registeredOpcodes.add(LD_P_HL_H)
+            registeredOpcodes.add(LD_P_HL_L)
+            registeredOpcodes.add(HALT)
+            registeredOpcodes.add(LD_P_HL_A)
+            registeredOpcodes.add(LD_A_B)
+            registeredOpcodes.add(LD_A_C)
+            registeredOpcodes.add(LD_A_D)
+            registeredOpcodes.add(LD_A_E)
+            registeredOpcodes.add(LD_A_H)
+            registeredOpcodes.add(LD_A_L)
+            registeredOpcodes.add(LD_A_P_HL)
+            registeredOpcodes.add(LD_A_A)
         }
 
     }
 
+    fun start(){
+        halt = false
+        systemClock.start()
+    }
 
-    fun fetch(){
+    fun stop(){
+        halt = true
+        systemClock.stop()
+    }
+
+    private fun fetch(){
         opcode = memory.readNextByte().toInt()
     }
 
-    fun decode(){
+    private fun decode(){
         try {
             decodedOpcode = registeredOpcodes[opcode]
             println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
@@ -153,8 +204,8 @@ class CPU {
         }
     }
 
-    fun execute(){
-        decodedOpcode.execute(memory, registers)
+    private fun execute(){
+        decodedOpcode.execute(this, memory, registers)
         decodedOpcode = NOP
     }
 
