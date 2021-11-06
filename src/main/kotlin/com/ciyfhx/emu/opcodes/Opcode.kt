@@ -13,20 +13,20 @@ object NOP : Opcode(0x00) {
     override fun execute(memory: Memory, registers: Registers) {}
 }
 
-class LD_BC_D16 : Opcode(0x01) {
+object LD_BC_D16 : Opcode(0x01) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = memory.readNextByte().toInt()
         registers.B = memory.readNextByte().toInt()
     }
 }
 
-class LD_BC_A : Opcode(0x02) {
+object LD_BC_A : Opcode(0x02) {
     override fun execute(memory: Memory, registers: Registers) {
         val address = registers.getBC()
         memory.write(address, registers.accumulator.toByte())
     }
 }
-class INC_BC : Opcode(0x03) {
+object INC_BC : Opcode(0x03) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getBC()
         val data = value + 1
@@ -34,7 +34,7 @@ class INC_BC : Opcode(0x03) {
     }
 }
 
-class INC_B : Opcode(0x04) {
+object INC_B : Opcode(0x04) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.B
         val data = value + 1 and 0xFF
@@ -45,7 +45,7 @@ class INC_B : Opcode(0x04) {
     }
 }
 
-class DEC_B : Opcode(0x05) {
+object DEC_B : Opcode(0x05) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.B
         val data = value - 1 and 0xFF
@@ -56,13 +56,13 @@ class DEC_B : Opcode(0x05) {
     }
 }
 
-class LD_B_D8 : Opcode(0x06) {
+object LD_B_D8 : Opcode(0x06) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = memory.readNextByte().toInt()
     }
 }
 
-class RLCA : Opcode(0x07) {
+object RLCA : Opcode(0x07) {
     override fun execute(memory: Memory, registers: Registers) {
         val carry = registers.accumulator and 0b1000_0000
         registers.accumulator = registers.accumulator shl 1
@@ -74,7 +74,7 @@ class RLCA : Opcode(0x07) {
     }
 }
 
-class LD_A16_SP : Opcode(0x08) {
+object LD_A16_SP : Opcode(0x08) {
     override fun execute(memory: Memory, registers: Registers) {
         val lsb = memory.readNextByte()
         val hsb = memory.readNextByte()
@@ -82,7 +82,7 @@ class LD_A16_SP : Opcode(0x08) {
     }
 }
 
-class ADD_HL_BC : Opcode(0x09) {
+object ADD_HL_BC : Opcode(0x09) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getBC() + registers.getHL()
         val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
@@ -93,20 +93,20 @@ class ADD_HL_BC : Opcode(0x09) {
     }
 }
 
-class LD_A_BC : Opcode(0x0A) {
+object LD_A_BC : Opcode(0x0A) {
     override fun execute(memory: Memory, registers: Registers) {
         val address = registers.getBC()
         registers.accumulator = memory.read(address).toInt()
     }
 }
 
-class DEC_BC : Opcode(0x0B) {
+object DEC_BC : Opcode(0x0B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.setBC(registers.getBC() - 1)
     }
 }
 
-class INC_C : Opcode(0x0C) {
+object INC_C : Opcode(0x0C) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.C
         val data = value + 1 and 0xFF
@@ -117,7 +117,7 @@ class INC_C : Opcode(0x0C) {
     }
 }
 
-class DEC_C : Opcode(0x0D) {
+object DEC_C : Opcode(0x0D) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.C
         val data = value - 1 and 0xFF
@@ -128,14 +128,14 @@ class DEC_C : Opcode(0x0D) {
     }
 }
 
-class LD_C_D8 : Opcode(0x0E) {
+object LD_C_D8 : Opcode(0x0E) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.readNextByte()
         registers.C = data.toInt()
     }
 }
 
-class RRCA : Opcode(0x0F) {
+object RRCA : Opcode(0x0F) {
     override fun execute(memory: Memory, registers: Registers) {
         val carry = registers.accumulator and 0b0000_0001
         registers.accumulator = registers.accumulator shr 1
@@ -147,28 +147,28 @@ class RRCA : Opcode(0x0F) {
     }
 }
 
-class STOP : Opcode(0x10) {
+object STOP : Opcode(0x10) {
     override fun execute(memory: Memory, registers: Registers) {
         assert(memory.readNextByte().toInt() == 0x00)
         //TODO("Check for STOP conditions")
     }
 }
 
-class LD_DE_D16 : Opcode(0x11) {
+object LD_DE_D16 : Opcode(0x11) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.E = memory.readNextByte().toInt()
         registers.D = memory.readNextByte().toInt()
     }
 }
 
-class LD_DE_A : Opcode(0x12) {
+object LD_DE_A : Opcode(0x12) {
     override fun execute(memory: Memory, registers: Registers) {
         val address = registers.getDE()
         memory.write(address, registers.accumulator.toByte())
     }
 }
 
-class INC_DE : Opcode(0x13) {
+object INC_DE : Opcode(0x13) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getDE()
         val data = value + 1
@@ -176,7 +176,7 @@ class INC_DE : Opcode(0x13) {
     }
 }
 
-class INC_D : Opcode(0x14) {
+object INC_D : Opcode(0x14) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.D
         val data = value + 1 and 0xFF
@@ -187,7 +187,7 @@ class INC_D : Opcode(0x14) {
     }
 }
 
-class DEC_D : Opcode(0x15) {
+object DEC_D : Opcode(0x15) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.D
         val data = value - 1 and 0xFF
@@ -198,13 +198,13 @@ class DEC_D : Opcode(0x15) {
     }
 }
 
-class LD_D_D8 : Opcode(0x16) {
+object LD_D_D8 : Opcode(0x16) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = memory.readNextByte().toInt()
     }
 }
 
-class RLA : Opcode(0x17) {
+object RLA : Opcode(0x17) {
     override fun execute(memory: Memory, registers: Registers) {
         val carry = registers.getCarryFlag()
         registers.accumulator = registers.accumulator shl 1
@@ -220,14 +220,14 @@ class RLA : Opcode(0x17) {
     }
 }
 
-class JR_S8 : Opcode(0x18) {
+object JR_S8 : Opcode(0x18) {
     override fun execute(memory: Memory, registers: Registers) {
         val offset = memory.readNextByte()
         registers.programCounter += offset
     }
 }
 
-class ADD_HL_DE : Opcode(0x19) {
+object ADD_HL_DE : Opcode(0x19) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getHL() + registers.getDE()
         val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
@@ -238,19 +238,19 @@ class ADD_HL_DE : Opcode(0x19) {
     }
 }
 
-class LD_A_DE : Opcode(0x1A) {
+object LD_A_DE : Opcode(0x1A) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = memory.read(registers.getDE()).toInt()
     }
 }
 
-class DEC_DE : Opcode(0x1B) {
+object DEC_DE : Opcode(0x1B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.setDE(registers.getDE() - 1)
     }
 }
 
-class INC_E : Opcode(0x1C) {
+object INC_E : Opcode(0x1C) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.E
         val data = value + 1 and 0xFF
@@ -261,7 +261,7 @@ class INC_E : Opcode(0x1C) {
     }
 }
 
-class DEC_E : Opcode(0x1D) {
+object DEC_E : Opcode(0x1D) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.E
         val data = value - 1 and 0xFF
@@ -272,14 +272,14 @@ class DEC_E : Opcode(0x1D) {
     }
 }
 
-class LD_E_D8 : Opcode(0x1E) {
+object LD_E_D8 : Opcode(0x1E) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.readNextByte()
         registers.E = data.toInt()
     }
 }
 
-class RRA : Opcode(0x1F) {
+object RRA : Opcode(0x1F) {
     override fun execute(memory: Memory, registers: Registers) {
         val carry = if(registers.getCarryFlag()) 1 else 0
         val a8 = registers.accumulator or 0b0000_0001
@@ -292,7 +292,7 @@ class RRA : Opcode(0x1F) {
     }
 }
 
-class JR_NZ_S8 : Opcode(0x20) {
+object JR_NZ_S8 : Opcode(0x20) {
     override fun execute(memory: Memory, registers: Registers) {
         val s8 = memory.readNextByte()
         if(!registers.getZeroFlag()){
@@ -301,14 +301,14 @@ class JR_NZ_S8 : Opcode(0x20) {
     }
 }
 
-class LD_HL_D16 : Opcode(0x21) {
+object LD_HL_D16 : Opcode(0x21) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.L = memory.readNextByte().toInt()
         registers.H = memory.readNextByte().toInt()
     }
 }
 
-class LD_HL_P_A : Opcode(0x22) {
+object LD_HL_P_A : Opcode(0x22) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.accumulator
         memory.write(registers.getHL(), value.toByte())
@@ -316,7 +316,7 @@ class LD_HL_P_A : Opcode(0x22) {
     }
 }
 
-class INC_HL : Opcode(0x23) {
+object INC_HL : Opcode(0x23) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getHL()
         val data = value + 1
@@ -324,7 +324,7 @@ class INC_HL : Opcode(0x23) {
     }
 }
 
-class INC_H : Opcode(0x24) {
+object INC_H : Opcode(0x24) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.H
         val data = value + 1 and 0xFF
@@ -335,7 +335,7 @@ class INC_H : Opcode(0x24) {
     }
 }
 
-class DEC_H : Opcode(0x25) {
+object DEC_H : Opcode(0x25) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.H
         val data = value - 1 and 0xFF
@@ -346,13 +346,13 @@ class DEC_H : Opcode(0x25) {
     }
 }
 
-class LD_H_D8 : Opcode(0x26) {
+object LD_H_D8 : Opcode(0x26) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.H = memory.readNextByte().toInt()
     }
 }
 
-class DAA : Opcode(0x27) {
+object DAA : Opcode(0x27) {
     override fun execute(memory: Memory, registers: Registers) {
         var data = registers.accumulator
         var correction = 0
@@ -374,7 +374,7 @@ class DAA : Opcode(0x27) {
     }
 }
 
-class JR_Z_S8 : Opcode(0x28) {
+object JR_Z_S8 : Opcode(0x28) {
     override fun execute(memory: Memory, registers: Registers) {
         val offset = memory.readNextByte()
         if(registers.getZeroFlag()){
@@ -383,7 +383,7 @@ class JR_Z_S8 : Opcode(0x28) {
     }
 }
 
-class ADD_HL_HL : Opcode(0x29) {
+object ADD_HL_HL : Opcode(0x29) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getHL() + registers.getHL()
         val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
@@ -394,20 +394,20 @@ class ADD_HL_HL : Opcode(0x29) {
     }
 }
 
-class LD_A_HL_PLUS : Opcode(0x2A) {
+object LD_A_HL_PLUS : Opcode(0x2A) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = memory.read(registers.getHL()).toInt()
         registers.setHL(registers.getHL() + 1)
     }
 }
 
-class DEC_HL : Opcode(0x2B) {
+object DEC_HL : Opcode(0x2B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.setHL(registers.getHL() - 1)
     }
 }
 
-class INC_L : Opcode(0x2C) {
+object INC_L : Opcode(0x2C) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.L
         val data = value + 1 and 0xFF
@@ -419,7 +419,7 @@ class INC_L : Opcode(0x2C) {
 }
 
 
-class DEC_L : Opcode(0x2D) {
+object DEC_L : Opcode(0x2D) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.L
         val data = value - 1 and 0xFF
@@ -430,20 +430,20 @@ class DEC_L : Opcode(0x2D) {
     }
 }
 
-class LD_L_D8 : Opcode(0x2E) {
+object LD_L_D8 : Opcode(0x2E) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.readNextByte()
         registers.L = data.toInt()
     }
 }
 
-class CPL : Opcode(0x2F) {
+object CPL : Opcode(0x2F) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = registers.accumulator.inv()
     }
 }
 
-class JR_NC_S8 : Opcode(0x30) {
+object JR_NC_S8 : Opcode(0x30) {
     override fun execute(memory: Memory, registers: Registers) {
         val s8 = memory.readNextByte()
         if(!registers.getCarryFlag()){
@@ -452,14 +452,14 @@ class JR_NC_S8 : Opcode(0x30) {
     }
 }
 
-class LD_SP_D16 : Opcode(0x31) {
+object LD_SP_D16 : Opcode(0x31) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.stackPointer = memory.readNextByte().toInt()
         registers.stackPointer = registers.stackPointer or memory.readNextByte().toInt() shl 8
     }
 }
 
-class LD_HL_S_A : Opcode(0x32) {
+object LD_HL_S_A : Opcode(0x32) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.accumulator
         memory.write(registers.getHL(), value.toByte())
@@ -467,7 +467,7 @@ class LD_HL_S_A : Opcode(0x32) {
     }
 }
 
-class INC_SP : Opcode(0x33) {
+object INC_SP : Opcode(0x33) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getHL()
         val data = value + 1
@@ -475,7 +475,7 @@ class INC_SP : Opcode(0x33) {
     }
 }
 
-class INC_P_HL : Opcode(0x34) {
+object INC_P_HL : Opcode(0x34) {
     override fun execute(memory: Memory, registers: Registers) {
         val pointer = registers.getHL()
         val value = memory.read(pointer).toInt()
@@ -487,7 +487,7 @@ class INC_P_HL : Opcode(0x34) {
     }
 }
 
-class DEC_P_HL : Opcode(0x35) {
+object DEC_P_HL : Opcode(0x35) {
     override fun execute(memory: Memory, registers: Registers) {
         val pointer = registers.getHL()
         val value = memory.read(pointer).toInt()
@@ -498,7 +498,7 @@ class DEC_P_HL : Opcode(0x35) {
         memory.write(pointer, data.toByte())
     }
 }
-class LD_P_HL_D8 : Opcode(0x36) {
+object LD_P_HL_D8 : Opcode(0x36) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.readNextByte()
         val pointer = registers.getHL()
@@ -506,7 +506,7 @@ class LD_P_HL_D8 : Opcode(0x36) {
     }
 }
 
-class SCF : Opcode(0x37) {
+object SCF : Opcode(0x37) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.setSubtractFlag(false)
         registers.setHalfCarryFlag(false)
@@ -514,7 +514,7 @@ class SCF : Opcode(0x37) {
     }
 }
 
-class JR_C_S8 : Opcode(0x38) {
+object JR_C_S8 : Opcode(0x38) {
     override fun execute(memory: Memory, registers: Registers) {
         val offset = memory.readNextByte()
         if(registers.getCarryFlag()){
@@ -523,7 +523,7 @@ class JR_C_S8 : Opcode(0x38) {
     }
 }
 
-class ADD_HL_SP : Opcode(0x39) {
+object ADD_HL_SP : Opcode(0x39) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.getHL() + registers.stackPointer
         val carry = value and 0b0000_0001_0000_0000 == 0b0000_0001_0000_0000
@@ -534,20 +534,20 @@ class ADD_HL_SP : Opcode(0x39) {
     }
 }
 
-class LD_A_HL_MINUS : Opcode(0x3A) {
+object LD_A_HL_MINUS : Opcode(0x3A) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.accumulator = memory.read(registers.getHL()).toInt()
         registers.setHL(registers.getHL() - 1)
     }
 }
 
-class DEC_SP : Opcode(0x3B) {
+object DEC_SP : Opcode(0x3B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.stackPointer--
     }
 }
 
-class INC_A : Opcode(0x3C) {
+object INC_A : Opcode(0x3C) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.accumulator
         val data = value + 1 and 0xFF
@@ -558,7 +558,7 @@ class INC_A : Opcode(0x3C) {
     }
 }
 
-class DEC_A : Opcode(0x3D) {
+object DEC_A : Opcode(0x3D) {
     override fun execute(memory: Memory, registers: Registers) {
         val value = registers.accumulator
         val data = value - 1 and 0xFF
@@ -569,14 +569,14 @@ class DEC_A : Opcode(0x3D) {
     }
 }
 
-class LD_A_D8 : Opcode(0x3E) {
+object LD_A_D8 : Opcode(0x3E) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.readNextByte()
         registers.accumulator = data.toInt()
     }
 }
 
-class CCF : Opcode(0x3F) {
+object CCF : Opcode(0x3F) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.setSubtractFlag(false)
         registers.setHalfCarryFlag(false)
@@ -584,129 +584,129 @@ class CCF : Opcode(0x3F) {
     }
 }
 
-class LD_B_B : Opcode(0x40) {
+object LD_B_B : Opcode(0x40) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.B
     }
 }
 
-class LD_B_C : Opcode(0x41) {
+object LD_B_C : Opcode(0x41) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.C
     }
 }
 
-class LD_B_D : Opcode(0x42) {
+object LD_B_D : Opcode(0x42) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.D
     }
 }
 
-class LD_B_E : Opcode(0x43) {
+object LD_B_E : Opcode(0x43) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.E
     }
 }
 
-class LD_B_H : Opcode(0x44) {
+object LD_B_H : Opcode(0x44) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.H
     }
 }
 
-class LD_B_L : Opcode(0x45) {
+object LD_B_L : Opcode(0x45) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.L
     }
 }
 
-class LD_B_P_HL : Opcode(0x46) {
+object LD_B_P_HL : Opcode(0x46) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
         registers.B = data.toInt()
     }
 }
 
-class LD_B_A : Opcode(0x47) {
+object LD_B_A : Opcode(0x47) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.B = registers.accumulator
     }
 }
 
-class LD_C_B : Opcode(0x48) {
+object LD_C_B : Opcode(0x48) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.B
     }
 }
 
-class LD_C_C : Opcode(0x49) {
+object LD_C_C : Opcode(0x49) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.C
     }
 }
 
-class LD_C_D : Opcode(0x4A) {
+object LD_C_D : Opcode(0x4A) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.D
     }
 }
 
-class LD_C_E : Opcode(0x4B) {
+object LD_C_E : Opcode(0x4B) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.E
     }
 }
 
-class LD_C_H : Opcode(0x4C) {
+object LD_C_H : Opcode(0x4C) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.H
     }
 }
 
-class LD_C_L : Opcode(0x4D) {
+object LD_C_L : Opcode(0x4D) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.L
     }
 }
 
-class LD_C_P_HL : Opcode(0x4E) {
+object LD_C_P_HL : Opcode(0x4E) {
     override fun execute(memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
         registers.C = data.toInt()
     }
 }
 
-class LD_C_A : Opcode(0x4F) {
+object LD_C_A : Opcode(0x4F) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.C = registers.accumulator
     }
 }
 
-class LD_D_B : Opcode(0x50) {
+object LD_D_B : Opcode(0x50) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = registers.B
     }
 }
 
-class LD_D_C : Opcode(0x51) {
+object LD_D_C : Opcode(0x51) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = registers.C
     }
 }
 
-class LD_D_D : Opcode(0x52) {
+object LD_D_D : Opcode(0x52) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = registers.D
     }
 }
 
-class LD_D_E : Opcode(0x53) {
+object LD_D_E : Opcode(0x53) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = registers.E
     }
 }
 
-class LD_D_H : Opcode(0x54) {
+object LD_D_H : Opcode(0x54) {
     override fun execute(memory: Memory, registers: Registers) {
         registers.D = registers.H
     }
