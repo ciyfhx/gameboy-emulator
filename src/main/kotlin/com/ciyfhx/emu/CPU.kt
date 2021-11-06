@@ -10,6 +10,8 @@ class CPU {
     val memory = Memory(registers)
 
     var halt = false
+    //master interrupt enable flag
+    var ime = false
 
     private var opcode: UInt = 0u
     private var decodedOpcode: Opcode = NOP
@@ -265,7 +267,60 @@ class CPU {
 
             registeredOpcodes.add(CALL_NC_A16)
             registeredOpcodes.add(PUSH_DE)
+            registeredOpcodes.add(SUB_D8)
+            registeredOpcodes.add(RST_2)
+            registeredOpcodes.add(RET_C)
+            registeredOpcodes.add(RETI)
+            registeredOpcodes.add(JP_C_A16)
 
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(CALL_C_A16)
+
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(SBC_A_D8)
+            registeredOpcodes.add(RST_3)
+            registeredOpcodes.add(LD_P_A8_A)
+            registeredOpcodes.add(POP_HL)
+            registeredOpcodes.add(LD_P_C_A)
+
+            registeredOpcodes.add(NOP)
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(PUSH_HL)
+            registeredOpcodes.add(AND_D8)
+            registeredOpcodes.add(RST_4)
+            registeredOpcodes.add(ADD_SP_S8)
+            registeredOpcodes.add(JP_HL)
+            registeredOpcodes.add(LD_P_A16_A)
+
+            registeredOpcodes.add(NOP)
+            registeredOpcodes.add(NOP)
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(XOR_D8)
+            registeredOpcodes.add(RST_5)
+            registeredOpcodes.add(LD_A_P_A8)
+            registeredOpcodes.add(POP_AF)
+            registeredOpcodes.add(LD_A_P_C)
+            registeredOpcodes.add(DI)
+
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(PUSH_AF)
+            registeredOpcodes.add(OR_D8)
+            registeredOpcodes.add(RST_6)
+            registeredOpcodes.add(LD_HL_SP_PLUS_S8)
+            registeredOpcodes.add(LD_SP_HL)
+            registeredOpcodes.add(LD_A_A16)
+            registeredOpcodes.add(EI)
+
+            registeredOpcodes.add(NOP)
+            registeredOpcodes.add(NOP)
+
+            registeredOpcodes.add(CP_D8)
+            registeredOpcodes.add(RST_7)
         }
 
     }
