@@ -27,7 +27,7 @@ class Clock(
         try {
             future.get()
         }catch (e: ExecutionException){
-            e.printStackTrace()
+            ClockExecutionException(e.cause!!).printStackTrace()
         }
     }
 
@@ -39,6 +39,19 @@ class Clock(
         running = false
 
         executor.shutdownNow()
+    }
+
+}
+
+/**
+ * Only print the [cause] for easy readable stacktrace
+ */
+class ClockExecutionException(wrappedThrowable: Throwable,
+                              private val printSelf: Boolean = false) : Exception(wrappedThrowable) {
+
+    override fun printStackTrace() {
+        if(!printSelf)this.cause!!.printStackTrace()
+        else this.printStackTrace()
     }
 
 }
