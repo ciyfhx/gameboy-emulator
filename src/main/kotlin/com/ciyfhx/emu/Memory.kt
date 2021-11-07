@@ -1,23 +1,28 @@
 package com.ciyfhx.emu
 
 import com.ciyfhx.emu.opcodes.combineBytes
+import com.ciyfhx.emu.opcodes.toHexCode
 
-class Memory(
+open class Memory(
     val registers: Registers
 ) {
 
-    private val memory = ByteArray(65536)
+//    private val memory = ByteArray(65536)
+    protected val memory: Array<MemoryEntry> = Array(65536){ MemoryEntry(it.toUInt(), 0u) }
 
-    fun copyByteArray(offset: UInt, data: ByteArray){
-        System.arraycopy(data, 0, memory, offset.toInt(), data.size)
+    fun copyByteArray(offset: Int, data: ByteArray){
+//        System.arraycopy(data, 0, memory, offset, data.size)
+        for(i in data.indices){
+            memory[i + offset].value = data[i].toUByte()
+        }
     }
 
-    fun read(address: UInt): UByte {
-        return memory[address.toInt()].toUByte()
+    open fun read(address: UInt): UByte {
+        return memory[address.toInt()].value
     }
 
-    fun write(address: UInt, value: UByte){
-        memory[address.toInt()] = value.toByte()
+    open fun write(address: UInt, value: UByte){
+        memory[address.toInt()].value = value
     }
 
     fun readNextByte(): UByte{
@@ -30,6 +35,13 @@ class Memory(
         val lob = readNextByte()
         val hob = readNextByte()
         return combineBytes(hob, lob).toUShort()
+    }
+
+    class MemoryEntry(
+        val address: UInt,
+        var value: UByte
+    ){
+        override fun toString() = "0x${address.toHexCode(4)}: ${value.toHexCode()}"
     }
 
 }

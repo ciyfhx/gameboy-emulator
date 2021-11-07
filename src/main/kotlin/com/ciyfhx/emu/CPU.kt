@@ -4,10 +4,9 @@ import com.ciyfhx.emu.opcodes.*
 import com.ciyfhx.emu.opcodes.Opcode
 import java.util.*
 
-class CPU {
-
-    val registers = Registers()
-    val memory = Memory(registers)
+class CPU(
+    val memory: Memory, val registers: Registers
+) {
 
     var halt = false
     //master interrupt enable flag

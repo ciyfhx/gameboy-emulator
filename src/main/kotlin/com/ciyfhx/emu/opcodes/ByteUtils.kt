@@ -6,8 +6,12 @@ fun combineBytes(hob: UByte, lob: UByte): UInt{
     return (hob.toUInt() shr 8) or lob.toUInt()
 }
 
-fun UInt.toHexCode(): String{
-    return this.toUByte().toString(16).uppercase(Locale.getDefault())
+fun UInt.toHexCode(take: Int = 2): String {
+    return this.toString(16).takeLast(take).uppercase(Locale.getDefault())
+}
+
+fun UByte.toHexCode(): String {
+    return this.toString(16).uppercase(Locale.getDefault())
 }
 
 fun UInt.getLob() = this.toUByte()
