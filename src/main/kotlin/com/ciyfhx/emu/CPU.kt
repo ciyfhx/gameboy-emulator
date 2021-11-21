@@ -12,7 +12,7 @@ class CPU(
     //master interrupt enable flag
     var ime = false
 
-    private var opcode: UInt = 0u
+    private var opcode: Int = 0
     private var decodedOpcode: Opcode = NOP
 
     var last = System.currentTimeMillis()
@@ -335,12 +335,12 @@ class CPU(
     }
 
     private fun fetch(){
-        opcode = memory.readNextByte().toUInt()
+        opcode = memory.readNextByte().toInt()
     }
 
     private fun decode(){
         try {
-            decodedOpcode = registeredOpcodes[opcode.toInt()]
+            decodedOpcode = registeredOpcodes[opcode]
             println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
         }catch(e: IndexOutOfBoundsException){
             println("Unknown opcode 0x${opcode.toHexCode()}")

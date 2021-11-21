@@ -1,8 +1,5 @@
 package com.ciyfhx.emu
 
-fun readBootRom(): ByteArray? {
-    return RawFileReader.readRawFile("bootrom.gb")
-}
 
 object RawFileReader {
 
