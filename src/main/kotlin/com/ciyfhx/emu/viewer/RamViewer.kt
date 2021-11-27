@@ -1,57 +1,54 @@
 package com.ciyfhx.emu.viewer
 
-import com.ciyfhx.emu.*
+import com.ciyfhx.emu.CPU
+import com.ciyfhx.emu.Memory
+import com.ciyfhx.emu.MemoryRegion
+import com.ciyfhx.emu.Registers
 import com.ciyfhx.emu.mapper.BootRom
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
+import com.ciyfhx.emu.opcodes.toHexCode
 import tornadofx.*
 
 
 class EmuApp: App(RamViewer::class)
-
 class RamViewer: View() {
     val controller: RamViewerController by inject()
 
+    private val ramListView =
+        LazyListView(RamViewerMemoryLazyLoader(controller.memory), 0xFFFF)
+
     override val root = vbox {
         controller
-//        listview(controller.ramValues)
+        ramListView
     }
+
+
 }
 
 class RamViewerController: Controller(){
     private val context: EmuContext by inject()
-    var memory: Memory? = null
-
-    init {
-        initMemoryList()
-    }
-
-//    val ramValues: ObservableList<Memory.MemoryEntry>? get() {
-//        val memory = this.memory
-//        return if(memory is ObservableMemory){
-//            memory.observableList
-//        } else null
-//    }
-
-    private fun initMemoryList() {
-        context.start()
-        memory = context.cpu.memory
-    }
-
-//    class ObservableMemory(registers: Registers): Memory(registers) {
-//        val observableList = FXCollections.observableList(this.memory.toList())
-//
-//        override fun write(address: UInt, value: UByte) {
-//            observableList.invalidate()
-//            super.write(address, value)
-//        }
-//    }
+    var memory = context.cpu.memory
 
 }
 
+class RamViewerMemoryLazyLoader(
+    val memory: Memory
+) : LazyLoader {
+
+    init {
+        memory.addWriteListener{
+
+        }
+    }
+
+    override fun loadItems(index: Int, size: Int): Collection<String> {
+        return (index until (index+size)).map(memory::read).map{it.toHexCode()}
+    }
+
+}
+
+
 class EmuContext: ViewModel(){
     val registers = Registers()
-//    val memory = RamViewerController.ObservableMemory(registers)
     val memory = Memory(registers)
     val cpu = CPU(memory, registers)
 
