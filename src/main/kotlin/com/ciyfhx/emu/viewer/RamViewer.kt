@@ -1,11 +1,9 @@
 package com.ciyfhx.emu.viewer
 
 import com.ciyfhx.emu.CPU
+import com.ciyfhx.emu.GameBoyMemory
 import com.ciyfhx.emu.Memory
-import com.ciyfhx.emu.MemoryRegion
 import com.ciyfhx.emu.Registers
-import com.ciyfhx.emu.mapper.BootRom
-import com.ciyfhx.emu.opcodes.toHexCode
 import tornadofx.*
 
 
@@ -13,15 +11,21 @@ class EmuApp: App(RamViewer::class)
 class RamViewer: View() {
     val controller: RamViewerController by inject()
 
-    private val ramListView =
-        LazyListView(RamViewerMemoryLazyLoader(controller.memory), 0xFFFF)
+    val ramValues = List(0x8000){
+        controller.memory.read(it)
+    }.asObservable()
 
-    override val root = vbox {
-        controller
-        ramListView
+    init {
+        controller.memory.addWriteListener{
+            ramValues[it.address] = it
+        }
     }
 
-
+    override val root = vbox {
+//        controller
+        listview(ramValues)
+//        ramListView
+    }
 }
 
 class RamViewerController: Controller(){
@@ -41,7 +45,7 @@ class RamViewerMemoryLazyLoader(
     }
 
     override fun loadItems(index: Int, size: Int): Collection<String> {
-        return (index until (index+size)).map(memory::read).map{it.toHexCode()}
+        return (index until (index+size)).map(memory::read).map{it.toString()}
     }
 
 }
@@ -49,12 +53,10 @@ class RamViewerMemoryLazyLoader(
 
 class EmuContext: ViewModel(){
     val registers = Registers()
-    val memory = Memory(registers)
+    val memory = GameBoyMemory(registers)
     val cpu = CPU(memory, registers)
 
      fun start(){
-         //Copy bootrom
-         memory.registerMemoryMapper(BootRom(), MemoryRegion(0))
          cpu.start()
      }
 }

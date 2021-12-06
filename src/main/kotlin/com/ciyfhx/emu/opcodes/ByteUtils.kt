@@ -26,3 +26,7 @@ fun copyMemoryArray(offset: Int, data: ByteArray, destination: Array<Memory.Memo
         destination[i + offset] = Memory.MemoryEntry(i + offset, data[i].toUByte())
     }
 }
+
+fun UByte.getBit(position: Int): Boolean {
+    return (this.toInt() shr position) and 1 == 1
+}

@@ -6,7 +6,7 @@ import java.util.*
 
 
 interface MemoryMapper {
-    fun read(address: Int): UByte
+    fun read(address: Int): Memory.MemoryEntry
     fun write(memoryEntry: Memory.MemoryEntry)
 }
 
@@ -56,7 +56,7 @@ open class Memory(
         return memoryMappers.floorEntry(region).value
     }
 
-    open fun read(address: Int): UByte {
+    open fun read(address: Int): MemoryEntry {
         return getMemoryMapperByRegion(MemoryRegion(address)).read(address)
     }
 
@@ -66,7 +66,7 @@ open class Memory(
         getMemoryMapperByRegion(MemoryRegion(address)).write(writeValue)
     }
 
-    fun read(address: UInt): UByte {
+    fun read(address: UInt): MemoryEntry {
         return read(address.toInt())
     }
 
@@ -75,9 +75,9 @@ open class Memory(
     }
 
     fun readNextByte(): UByte{
-        val byte = read(registers.programCounter.toInt())
+        val entry = read(registers.programCounter.toInt())
         registers.programCounter++
-        return byte
+        return entry.value
     }
 
     fun readNextShort(): UShort{

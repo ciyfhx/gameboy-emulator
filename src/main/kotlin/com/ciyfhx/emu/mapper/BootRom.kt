@@ -11,8 +11,8 @@ class BootRom : ReadOnlyMemoryMapper {
         copyMemoryArray(0, readBootRom()!!, bootRomData)
     }
 
-    override fun read(address: Int): UByte {
-        return bootRomData[address].value
+    override fun read(address: Int): Memory.MemoryEntry {
+        return bootRomData[address]
     }
 }
 

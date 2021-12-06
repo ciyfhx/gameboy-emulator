@@ -4,6 +4,7 @@ import javafx.collections.FXCollections
 import javafx.geometry.Orientation
 import javafx.scene.control.ListView
 import javafx.scene.control.ScrollBar
+import javafx.scene.input.ScrollEvent
 
 fun interface LazyLoader{
     fun loadItems(index: Int, size: Int): Collection<String>
@@ -15,26 +16,34 @@ class LazyListView(
 ) : ListView<String>() {
 
     companion object {
-        private const val STEP_SIZE = 10
+        private const val STEP_SIZE = 1000
     }
 
     private val listItems = FXCollections.observableArrayList<String>()
-    private lateinit var scrollBar: ScrollBar
+    private var scrollBar: ScrollBar? = null
 
     private var start = 0
     private var step = STEP_SIZE
 
+    init {
+        init()
+    }
 
     fun init() {
+        loadInitialData()
         this.items = listItems
-        scrollBar = getListViewScrollBar()
-        scrollBar.valueProperty().addListener { observable, oldValue, newValue ->
-            val pos = newValue.toDouble()
-            if(pos == scrollBar.max && step <= totalItems) {
-                loadItemsAndPopulateInListItem(start)
+        addEventFilter(ScrollEvent.ANY) {
+            if(scrollBar == null){
+                scrollBar = getListViewScrollBar()
+                scrollBar!!.valueProperty().addListener { observable, oldValue, newValue ->
+                    val pos = newValue.toDouble()
+                    if(pos == scrollBar!!.max && step <= totalItems) {
+                        loadItemsAndPopulateInListItem(start)
+                    }
+                }
             }
         }
-        loadInitialData()
+
     }
 
     private fun loadInitialData(){
@@ -42,9 +51,9 @@ class LazyListView(
     }
 
     private fun loadItemsAndPopulateInListItem(index: Int){
-        listItems.addAll(index, loader.loadItems(index, STEP_SIZE))
         start = step
-        step += STEP_SIZE
+        step = (step + STEP_SIZE).coerceIn(0 until totalItems)
+        listItems.addAll(index, loader.loadItems(index, step))
     }
 
     private fun getListViewScrollBar(): ScrollBar {
@@ -56,5 +65,10 @@ class LazyListView(
         throw IllegalStateException("Unable to find scroll bar in list view")
     }
 
+    override fun refresh() {
+        super.refresh()
 
+
+        getListViewScrollBar()
+    }
 }

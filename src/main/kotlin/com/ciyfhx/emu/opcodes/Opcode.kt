@@ -98,7 +98,7 @@ object ADD_HL_BC : Opcode(0x09) {
 object LD_A_P_BC : Opcode(0x0A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val address = registers.getBC()
-        registers.accumulator = memory.read(address).toUInt()
+        registers.accumulator = memory.read(address).value.toUInt()
     }
 }
 
@@ -242,7 +242,7 @@ object ADD_HL_DE : Opcode(0x19) {
 
 object LD_A_P_DE : Opcode(0x1A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.accumulator = memory.read(registers.getDE()).toUInt()
+        registers.accumulator = memory.read(registers.getDE()).value.toUInt()
     }
 }
 
@@ -403,7 +403,7 @@ object ADD_HL_HL : Opcode(0x29) {
 object LD_A_P_HL_PLUS : Opcode(0x2A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         registers.setHL(registers.getHL() + 1u)
-        registers.accumulator = memory.read(registers.getHL()).toUInt()
+        registers.accumulator = memory.read(registers.getHL()).value.toUInt()
     }
 }
 
@@ -484,7 +484,7 @@ object INC_SP : Opcode(0x33) {
 object INC_P_HL : Opcode(0x34) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val pointer = registers.getHL()
-        val value = memory.read(pointer).toUInt()
+        val value = memory.read(pointer).value.toUInt()
         val data = value + 1u and 0xFFu
         registers.setZeroFlag(data == 0u)
         registers.setSubtractFlag(false)
@@ -496,7 +496,7 @@ object INC_P_HL : Opcode(0x34) {
 object DEC_P_HL : Opcode(0x35) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val pointer = registers.getHL()
-        val value = memory.read(pointer).toUInt()
+        val value = memory.read(pointer).value.toUInt()
         val data = value - 1u and 0xFFu
         registers.setZeroFlag(data == 0u)
         registers.setSubtractFlag(true)
@@ -543,7 +543,7 @@ object ADD_HL_SP : Opcode(0x39) {
 object LD_A_HL_MINUS : Opcode(0x3A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         registers.setHL(registers.getHL() - 1u)
-        registers.accumulator = memory.read(registers.getHL()).toUInt()
+        registers.accumulator = memory.read(registers.getHL()).value.toUInt()
     }
 }
 
@@ -629,7 +629,7 @@ object LD_B_L : Opcode(0x45) {
 object LD_B_P_HL : Opcode(0x46) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.B = data.toUInt()
+        registers.B = data.value.toUInt()
     }
 }
 
@@ -678,7 +678,7 @@ object LD_C_L : Opcode(0x4D) {
 object LD_C_P_HL : Opcode(0x4E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.C = data.toUInt()
+        registers.C = data.value.toUInt()
     }
 }
 
@@ -727,7 +727,7 @@ object LD_D_L : Opcode(0x55) {
 object LD_D_P_HL : Opcode(0x56) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.D = data.toUInt()
+        registers.D = data.value.toUInt()
     }
 }
 
@@ -776,7 +776,7 @@ object LD_E_L : Opcode(0x5D) {
 object LD_E_P_HL : Opcode(0x5E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.E = data.toUInt()
+        registers.E = data.value.toUInt()
     }
 }
 
@@ -825,7 +825,7 @@ object LD_H_L : Opcode(0x65) {
 object LD_H_P_HL : Opcode(0x66) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.setHL(data.toUInt())
+        registers.setHL(data.value.toUInt())
     }
 }
 
@@ -874,7 +874,7 @@ object LD_L_L : Opcode(0x6D) {
 object LD_L_P_HL : Opcode(0x6E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.L = data.toUInt()
+        registers.L = data.value.toUInt()
     }
 }
 
@@ -970,7 +970,7 @@ object LD_A_L : Opcode(0x7D) {
 object LD_A_P_HL : Opcode(0x7E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = data.toUInt()
+        registers.accumulator = data.value.toUInt()
     }
 }
 
@@ -1019,7 +1019,7 @@ object ADD_A_L : Opcode(0x85) {
 object ADD_A_P_HL : Opcode(0x86) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.add(registers, registers.accumulator, data.toUInt())
+        registers.accumulator = ALU.add(registers, registers.accumulator, data.value.toUInt())
     }
 }
 
@@ -1068,7 +1068,7 @@ object ADC_A_L : Opcode(0x8D) {
 object ADC_A_P_HL : Opcode(0x8E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.adc(registers, registers.accumulator, data.toUInt())
+        registers.accumulator = ALU.adc(registers, registers.accumulator, data.value.toUInt())
     }
 }
 
@@ -1117,7 +1117,7 @@ object SUB_L : Opcode(0x95) {
 object SUB_P_HL : Opcode(0x96) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.sub(registers, registers.accumulator, data.toUInt())
+        registers.accumulator = ALU.sub(registers, registers.accumulator, data.value.toUInt())
     }
 }
 
@@ -1166,7 +1166,7 @@ object SBC_A_L : Opcode(0x9D) {
 object SBC_A_P_HL : Opcode(0x9E) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.sbc(registers, registers.accumulator, data.toUInt())
+        registers.accumulator = ALU.sbc(registers, registers.accumulator, data.value.toUInt())
     }
 }
 
@@ -1215,7 +1215,7 @@ object AND_L : Opcode(0xA5) {
 object AND_P_HL : Opcode(0xA6) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.and(registers, data.toUInt(), registers.accumulator)
+        registers.accumulator = ALU.and(registers, data.value.toUInt(), registers.accumulator)
     }
 }
 
@@ -1264,7 +1264,7 @@ object XOR_L : Opcode(0xAD) {
 object XOR_P_HL : Opcode(0xAE) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.xor(registers, data.toUInt(), registers.accumulator)
+        registers.accumulator = ALU.xor(registers, data.value.toUInt(), registers.accumulator)
     }
 }
 
@@ -1313,7 +1313,7 @@ object OR_L: Opcode(0xB5) {
 object OR_P_HL: Opcode(0xB6) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.accumulator = ALU.or(registers, data.toUInt(), registers.accumulator)
+        registers.accumulator = ALU.or(registers, data.value.toUInt(), registers.accumulator)
     }
 }
 
@@ -1362,7 +1362,7 @@ object CP_L: Opcode(0xBD) {
 object CP_P_HL: Opcode(0xBE) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        ALU.sub(registers, registers.accumulator, data.toUInt())
+        ALU.sub(registers, registers.accumulator, data.value.toUInt())
     }
 }
 
@@ -1377,15 +1377,15 @@ object RET_NZ: Opcode(0xC0) {
         if(!registers.getZeroFlag()){
             val lob = memory.read(registers.stackPointer++)
             val hob = memory.read(registers.stackPointer++)
-            registers.programCounter = combineBytes(hob, lob)
+            registers.programCounter = combineBytes(hob.value, lob.value)
         }
     }
 }
 
 object POP_BC: Opcode(0xC1) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.C = memory.read(registers.stackPointer++).toUInt()
-        registers.B = memory.read(registers.stackPointer++).toUInt()
+        registers.C = memory.read(registers.stackPointer++).value.toUInt()
+        registers.B = memory.read(registers.stackPointer++).value.toUInt()
     }
 }
 
@@ -1444,7 +1444,7 @@ object RET_Z: Opcode(0xC8) {
         if(registers.getZeroFlag()){
             val lob = memory.read(registers.stackPointer++)
             val hob = memory.read(registers.stackPointer++)
-            registers.programCounter = combineBytes(hob, lob)
+            registers.programCounter = combineBytes(hob.value, lob.value)
         }
     }
 }
@@ -1453,7 +1453,7 @@ object RET: Opcode(0xC9) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val lob = memory.read(registers.stackPointer++)
         val hob = memory.read(registers.stackPointer++)
-        registers.programCounter = combineBytes(hob, lob)
+        registers.programCounter = combineBytes(hob.value, lob.value)
     }
 }
 
@@ -1515,15 +1515,15 @@ object RET_NC: Opcode(0xD0) {
         if(!registers.getCarryFlag()){
             val lob = memory.read(registers.stackPointer++)
             val hob = memory.read(registers.stackPointer++)
-            registers.programCounter = combineBytes(hob, lob)
+            registers.programCounter = combineBytes(hob.value, lob.value)
         }
     }
 }
 
 object POP_DE: Opcode(0xD1) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.E = memory.read(registers.stackPointer++).toUInt()
-        registers.D = memory.read(registers.stackPointer++).toUInt()
+        registers.E = memory.read(registers.stackPointer++).value.toUInt()
+        registers.D = memory.read(registers.stackPointer++).value.toUInt()
     }
 }
 
@@ -1576,7 +1576,7 @@ object RET_C: Opcode(0xD8) {
         if(registers.getCarryFlag()){
             val lob = memory.read(registers.stackPointer++)
             val hob = memory.read(registers.stackPointer++)
-            registers.programCounter = combineBytes(hob, lob)
+            registers.programCounter = combineBytes(hob.value, lob.value)
         }
     }
 }
@@ -1585,7 +1585,7 @@ object RETI: Opcode(0xD9) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val lob = memory.read(registers.stackPointer++)
         val hob = memory.read(registers.stackPointer++)
-        registers.programCounter = combineBytes(hob, lob)
+        registers.programCounter = combineBytes(hob.value, lob.value)
 
         cpu.ime = true
     }
@@ -1636,8 +1636,8 @@ object LD_P_A8_A : Opcode(0xE0) {
 
 object POP_HL: Opcode(0xE1) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.L = memory.read(registers.stackPointer++).toUInt()
-        registers.H = memory.read(registers.stackPointer++).toUInt()
+        registers.L = memory.read(registers.stackPointer++).value.toUInt()
+        registers.H = memory.read(registers.stackPointer++).value.toUInt()
     }
 }
 
@@ -1717,7 +1717,7 @@ object RST_5: Opcode(0xEF) {
 object LD_A_P_A8 : Opcode(0xF0) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(memory.readNextByte().toUInt())
-        memory.write(registers.accumulator, data)
+        memory.write(registers.accumulator, data.value)
     }
 }
 
@@ -1725,14 +1725,14 @@ object POP_AF: Opcode(0xC1) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val lob = memory.read(registers.stackPointer++)
         val hob = memory.read(registers.stackPointer++)
-        registers.accumulator = combineBytes(hob, lob)
+        registers.accumulator = combineBytes(hob.value, lob.value)
     }
 }
 
 object LD_A_P_C : Opcode(0xF2) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(0xFF00u or registers.C)
-        registers.accumulator = data.toUInt()
+        registers.accumulator = data.value.toUInt()
     }
 }
 
@@ -1782,7 +1782,7 @@ object LD_SP_HL: Opcode(0xF9) {
 object LD_A_A16: Opcode(0xFA) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val address = memory.readNextShort()
-        registers.accumulator = memory.read(address.toUInt()).toUInt()
+        registers.accumulator = memory.read(address.toUInt()).value.toUInt()
     }
 }
 
