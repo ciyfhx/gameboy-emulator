@@ -34,7 +34,7 @@ class DMA : MemoryMapper {
     }
 
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
-        TODO("Not yet implemented")
+        return memoryEntryRead
     }
 
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {

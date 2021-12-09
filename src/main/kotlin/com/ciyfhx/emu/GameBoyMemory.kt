@@ -1,5 +1,6 @@
 package com.ciyfhx.emu
 
+import com.ciyfhx.emu.mapper.DMA
 import com.ciyfhx.emu.mapper.GameRom
 import com.ciyfhx.emu.mapper.OAMRam
 import com.ciyfhx.emu.mapper.VideoRam
@@ -18,6 +19,7 @@ class GameBoyMemory(registers: Registers) : Memory(0xFFFF, registers) {
             OAMRam(),
             MemoryRegion(0xFE00..0xFE9F)
         )
+        registerMemoryMapper(DMA(), MemoryRegion(0xFF46..0xFF46))
     }
 
 }
