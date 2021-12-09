@@ -1,6 +1,5 @@
 package com.ciyfhx.emu.opcodes
 
-import com.ciyfhx.emu.Memory
 import java.util.*
 
 fun combineBytes(hob: UByte, lob: UByte): UInt{
