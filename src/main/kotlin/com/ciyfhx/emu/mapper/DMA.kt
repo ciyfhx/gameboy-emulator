@@ -3,8 +3,7 @@ package com.ciyfhx.emu.mapper
 import com.ciyfhx.emu.Memory
 import com.ciyfhx.emu.MemoryMapper
 
-class VideoRam: MemoryMapper {
-
+class DMA : MemoryMapper {
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
         TODO("Not yet implemented")
     }
@@ -12,5 +11,4 @@ class VideoRam: MemoryMapper {
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
         TODO("Not yet implemented")
     }
-
 }

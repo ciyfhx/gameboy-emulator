@@ -1,18 +1,22 @@
 package com.ciyfhx.emu.mapper
 
 import com.ciyfhx.emu.*
-import com.ciyfhx.emu.opcodes.copyMemoryArray
 
 class BootRom : ReadOnlyMemoryMapper {
 
-    private val bootRomData: Array<Memory.MemoryEntry> = Memory.MemoryEntry.createArray(256)
+    private lateinit var memory: Memory
 
-    init {
-        copyMemoryArray(0, readBootRom()!!, bootRomData)
+    override fun initMemory(memory: Memory) {
+        this.memory = memory
+        loadBootRom()
     }
 
-    override fun read(address: Int): Memory.MemoryEntry {
-        return bootRomData[address]
+    override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
+        return memoryEntryRead
+    }
+
+    private fun loadBootRom() {
+        memory.copyByteArray(readBootRom()!!, 0x0000)
     }
 }
 

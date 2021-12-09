@@ -6,22 +6,26 @@ import java.util.*
 
 
 interface MemoryMapper {
-    fun read(address: Int): Memory.MemoryEntry
-    fun write(memoryEntry: Memory.MemoryEntry)
+    fun initMemory(memory: Memory){}
+    fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry
+    fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry
 }
 
 interface ReadOnlyMemoryMapper: MemoryMapper {
-    override fun write(memoryEntry: Memory.MemoryEntry) {
+    override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
         throw ReadOnlyMemory()
     }
 }
 
 data class MemoryRegion(
-    val location: Int,
-    val size: Int = 0
+    val range: IntRange
 ): Comparable<MemoryRegion>{
+
+    val start: Int = range.first
+    val end: Int = range.last - 1
+
     override fun compareTo(other: MemoryRegion): Int {
-        return location.compareTo(other.location)
+        return start.compareTo(other.start)
     }
 }
 
@@ -30,9 +34,11 @@ fun interface WriteListener {
 }
 
 open class Memory(
+    val memorySize: Int,
     val registers: Registers
 ) {
 
+    private val memory = MemoryEntry.createArray(memorySize)
     private val writeListeners = mutableListOf<WriteListener>()
 
     fun addWriteListener(listener: WriteListener){
@@ -41,7 +47,7 @@ open class Memory(
     fun removeWriteListener(listener: WriteListener) {
         writeListeners -= listener
     }
-    private fun invokeChangeListener(writeValue: Memory.MemoryEntry){
+    private fun invokeChangeListener(writeValue: MemoryEntry){
         writeListeners.forEach { it.change(writeValue) }
     }
 
@@ -50,6 +56,7 @@ open class Memory(
 
     fun registerMemoryMapper(mapper: MemoryMapper, region: MemoryRegion){
         memoryMappers[region] = mapper
+        mapper.initMemory(this)
     }
 
     private fun getMemoryMapperByRegion(region: MemoryRegion): MemoryMapper{
@@ -57,13 +64,15 @@ open class Memory(
     }
 
     open fun read(address: Int): MemoryEntry {
-        return getMemoryMapperByRegion(MemoryRegion(address)).read(address)
+        val readValue = memory[address]
+        return getMemoryMapperByRegion(MemoryRegion(address..address)).read(readValue)
     }
 
     open fun write(address: Int, value: UByte){
-        val writeValue = MemoryEntry(address, value)
+        var writeValue = MemoryEntry(address, value)
         invokeChangeListener(writeValue)
-        getMemoryMapperByRegion(MemoryRegion(address)).write(writeValue)
+        writeValue = getMemoryMapperByRegion(MemoryRegion(address..address)).write(writeValue)
+        memory[writeValue.address] = writeValue
     }
 
     fun read(address: UInt): MemoryEntry {
@@ -84,6 +93,17 @@ open class Memory(
         val lob = readNextByte()
         val hob = readNextByte()
         return combineBytes(hob, lob).toUShort()
+    }
+
+    fun copyByteArray(data: ByteArray, offset: Int = 0, length: Int = data.size): Int {
+        var i = 0
+        while (i < length) {
+            val memoryEntry = memory[i + offset]
+            memoryEntry.value = data[i].toUByte()
+//            memory[i + offset] = MemoryEntry(i + offset, data[i].toUByte())
+            i++
+        }
+        return i
     }
 
     class MemoryEntry(

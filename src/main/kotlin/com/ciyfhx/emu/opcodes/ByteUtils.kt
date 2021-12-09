@@ -21,12 +21,6 @@ fun UInt.getHob(): UByte {
     return (this and 0xFF00u shr 8).toUByte()
 }
 
-fun copyMemoryArray(offset: Int, data: ByteArray, destination: Array<Memory.MemoryEntry>){
-    for(i in data.indices){
-        destination[i + offset] = Memory.MemoryEntry(i + offset, data[i].toUByte())
-    }
-}
-
 fun UByte.getBit(position: Int): Boolean {
     return (this.toInt() shr position) and 1 == 1
 }
