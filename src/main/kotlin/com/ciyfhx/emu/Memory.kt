@@ -34,7 +34,7 @@ fun interface WriteListener {
 }
 
 open class Memory(
-    val memorySize: Int,
+    memorySize: Int,
     val registers: Registers
 ) {
 
