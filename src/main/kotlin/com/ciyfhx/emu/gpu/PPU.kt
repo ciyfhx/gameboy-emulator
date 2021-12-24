@@ -1,9 +1,16 @@
 package com.ciyfhx.emu.gpu
 
-class PPU {
+import com.ciyfhx.emu.Clock
+import com.ciyfhx.emu.mapper.OAMRam
 
+class PPU(
+    private val oam: OAMRam,
 
+) {
 
+    val clock = Clock(60){
+
+    }
 }
 
 data class PixelTile(
