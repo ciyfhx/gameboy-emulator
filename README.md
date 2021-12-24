@@ -12,4 +12,4 @@ http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf
 
 
 ### Maybe Future Goals
-JIT(LLVM) to compile opcodes
+JIT(LLVM) or GraalVM's Truffle to compile opcodes
