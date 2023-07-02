@@ -7,24 +7,77 @@ enum class Flag {
     ZERO, SUBTRACT, HALF_CARRY, CARRY
 }
 
+fun interface OnRegisterChangedListener {
+    fun onRegisterChanged()
+}
+
 /**
  * [CPU] Registers
  */
 class Registers {
+
+    private val onRegisterChangedListeners = mutableListOf<OnRegisterChangedListener>()
+
+    fun addRegisterChangedListener(listener: OnRegisterChangedListener){
+        onRegisterChangedListeners += listener
+    }
+    fun removeRegisterListener(listener: OnRegisterChangedListener) {
+        onRegisterChangedListeners -= listener
+    }
+    private fun invokeChangeListener(){
+        onRegisterChangedListeners.forEach { it.onRegisterChanged() }
+    }
+
     var accumulator: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
     var flag = EnumSet.noneOf(Flag::class.java)
 
     var B: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
     var C: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
 
     var D: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
     var E: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
 
     var H: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
     var L: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
 
     var stackPointer: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
     var programCounter: UInt = 0u
+        set(value) {
+            invokeChangeListener()
+            field = value
+        }
 
     fun getBC(): UInt {
         return combineBytes(B.toUByte(), C.toUByte())

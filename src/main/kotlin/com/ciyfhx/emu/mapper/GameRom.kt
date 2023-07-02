@@ -20,7 +20,7 @@ class GameRom(
         this.memory = memory
         bootRom.initMemory(memory)
         data = readRom(romLocation)
-        memory.copyByteArray(data, 0x0100, 0x7FFF)
+        memory.copyByteArray(data, 0x0100, data.size)//0x7FFF
     }
 
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {

@@ -10,7 +10,7 @@ class GameBoyMemory(registers: Registers) : Memory(0xFFFF, registers) {
     init {
         //Define memory region
         registerMemoryMapper(
-            GameRom("C:\\Users\\pehzi\\Downloads\\bgb\\Tetris 2 (USA, Europe) (SGB Enhanced).gb"),
+            GameRom("/Users/pehziheng/Downloads/Tetris 2 (USA, Europe) (SGB Enhanced).gb"),
             MemoryRegion(0x0000..0x7FFF)
         )
         registerMemoryMapper(VideoRam(), MemoryRegion(0x8000..0x9FFF))

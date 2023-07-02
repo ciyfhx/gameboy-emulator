@@ -340,6 +340,7 @@ class CPU(
 
     private fun decode(){
         try {
+            Thread.sleep(1000)
             decodedOpcode = registeredOpcodes[opcode]
             println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
         }catch(e: IndexOutOfBoundsException){

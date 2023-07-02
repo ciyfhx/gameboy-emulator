@@ -13,7 +13,9 @@ interface MemoryMapper {
 
 interface ReadOnlyMemoryMapper: MemoryMapper {
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
-        throw ReadOnlyMemory()
+//        throw ReadOnlyMemory()
+        println("Tried to access read-only memory")
+        return memoryEntryWrite
     }
 }
 
@@ -34,7 +36,7 @@ fun interface WriteListener {
 }
 
 open class Memory(
-    memorySize: Int,
+    val memorySize: Int,
     val registers: Registers
 ) {
 

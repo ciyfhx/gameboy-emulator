@@ -468,8 +468,8 @@ object LD_SP_D16 : Opcode(0x31) {
 object LD_P_HL_MINUS_A : Opcode(0x32) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val value = registers.accumulator
-        registers.setHL(registers.getHL() - 1u)
         memory.write(registers.getHL(), value.getLob())
+        registers.setHL(registers.getHL() - 1u)
     }
 }
 
