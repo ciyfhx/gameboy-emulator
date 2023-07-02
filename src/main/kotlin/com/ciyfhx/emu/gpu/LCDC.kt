@@ -1,13 +1,25 @@
 package com.ciyfhx.emu.gpu
 
+import com.ciyfhx.emu.Memory
+import com.ciyfhx.emu.MemoryMapper
 import com.ciyfhx.emu.opcodes.getBit
 
-class LCDC {
+/**
+ * LCD Control register
+ */
+class LCDC: MemoryMapper {
 
     private var status: UByte = 0u
 
-    fun setValue(status: UByte) {
-        this.status = status
+    override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
+        return memoryEntryRead
+    }
+
+    override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
+        assert(memoryEntryWrite.address == 0xFF40)
+        val value = memoryEntryWrite.value
+        status = value
+        return memoryEntryWrite
     }
 
     fun getBgWindowDisplayPriority(): Boolean {
@@ -41,5 +53,7 @@ class LCDC {
     fun getLCDDisplayEnable(): Boolean {
         return status.getBit(7)
     }
+
+
 
 }

@@ -23,3 +23,11 @@ fun UInt.getHob(): UByte {
 fun UByte.getBit(position: Int): Boolean {
     return (this.toInt() shr position) and 1 == 1
 }
+
+fun UByte.setBit(position: Int, value: Boolean): UByte {
+    return if(value) {
+        (this.toInt() or (1 shl position))
+    } else {
+        (this.toInt() and (1 shl position).inv())
+    }.toUByte()
+}
