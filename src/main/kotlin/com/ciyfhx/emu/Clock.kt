@@ -39,6 +39,7 @@ class Clock(
         running = false
 
         executor.shutdownNow()
+        executor.awaitTermination(1000, TimeUnit.MILLISECONDS)
     }
 
 }

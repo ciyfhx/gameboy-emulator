@@ -1,5 +1,6 @@
 package com.ciyfhx.emu
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -16,18 +17,26 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.*
 
 class EmuContext {
-    val registers = Registers()
-    val memory = GameBoyMemory(registers)
-    val cpu = CPU(memory, registers)
+    //TODO: Create wrapper class for creating components
+    val memory = GameBoyMemory()
+    val cpu = CPU(memory)
+    private val logger: KLogger
+        get() = KotlinLogging.logger {}
 
      fun start(){
+         logger.info { "Starting Emulation!" }
+         memory.initCPU(cpu)
          cpu.start()
      }
 }
 
 fun main() {
+
     val context = EmuContext()
     val app = application {
 
@@ -38,17 +47,20 @@ fun main() {
         Window(
             onCloseRequest = ::exitApplication,
             title = "GameBoy Emulator",
-            state = rememberWindowState(width = 800.dp, height = 500.dp)
+            state = rememberWindowState(width = 1000.dp, height = 800.dp)
         ) {
             MaterialTheme {
-                Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
-                    Row(Modifier.weight(.7f)) {
-                        RamTableScreen(context.memory)
-                    }
-                    Row(Modifier.weight(.3f)) {
-                        RegistersTableScreen(context.registers)
-                    }
-                }
+//                Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
+//                    Row(Modifier.weight(.7f)) {
+//                        RamTableScreen(context.memory)
+//                    }
+//                    Row(Modifier.weight(.3f)) {
+//                        RegistersTableScreen(context.registers)
+//                    }
+//                }
+
+                Display()
+
             }
         }
     }
@@ -84,6 +96,7 @@ fun RowScope.TableCell(
     )
 }
 
+@Preview
 @Composable
 fun RamTableScreen(memory: Memory) {
     val memoryStep = 15
@@ -92,11 +105,17 @@ fun RamTableScreen(memory: Memory) {
     val column2Weight = .7f
     val column3Weight = .2f
 
+    val scope = MainScope()
+
     var invalidations by remember{
         mutableStateOf(false)
     }
 
     memory.addWriteListener{
+//        scope.launch(Dispatchers.Main){
+////            delay(1000)
+////            invalidations = !invalidations
+//        }
         invalidations = !invalidations
     }
 
@@ -188,5 +207,10 @@ fun RegistersTableScreen(registers: Registers) {
             }
         }
     }
+
+}
+
+@Composable
+fun Display(){
 
 }

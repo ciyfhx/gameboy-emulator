@@ -3,6 +3,8 @@ package com.ciyfhx.emu.opcodes
 import com.ciyfhx.emu.CPU
 import com.ciyfhx.emu.Memory
 import com.ciyfhx.emu.Registers
+import com.ciyfhx.emu.opcodes.CALL_A16.logger
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 abstract class Opcode(
     val opcode: Short
@@ -296,7 +298,7 @@ object RRA : Opcode(0x1F) {
 
 object JR_NZ_S8 : Opcode(0x20) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val offset = memory.readNextByte().toInt()
+        val offset = memory.readNextByte().toByte()
         if(!registers.getZeroFlag()){
             registers.programCounter = (registers.programCounter.toInt() + offset).toUInt()
         }
@@ -461,7 +463,7 @@ object JR_NC_S8 : Opcode(0x30) {
 object LD_SP_D16 : Opcode(0x31) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         registers.stackPointer = memory.readNextByte().toUInt()
-        registers.stackPointer = registers.stackPointer or memory.readNextByte().toUInt() shl 8
+        registers.stackPointer = registers.stackPointer or (memory.readNextByte().toUInt() shl 8)
     }
 }
 
@@ -1450,10 +1452,13 @@ object RET_Z: Opcode(0xC8) {
 }
 
 object RET: Opcode(0xC9) {
+    private val logger
+        get() = KotlinLogging.logger {}
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val lob = memory.read(registers.stackPointer++)
         val hob = memory.read(registers.stackPointer++)
         registers.programCounter = combineBytes(hob.value, lob.value)
+        logger.debug { "Returning from function at 0x${registers.programCounter.toInt().toHexCode(4)}" }
     }
 }
 
@@ -1465,14 +1470,9 @@ object JP_Z_A16: Opcode(0xCA) {
     }
 }
 
-object CB: Opcode(0xCB) {
-    override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val opcode = 0xCB00u or memory.readNextByte().toUInt()
-
-    }
-}
-
 object CALL_Z_A16: Opcode(0xCC) {
+    private val logger
+        get() = KotlinLogging.logger {}
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val address = memory.readNextShort()
         if(registers.getZeroFlag()){
@@ -1480,17 +1480,21 @@ object CALL_Z_A16: Opcode(0xCC) {
             memory.write(registers.stackPointer--, registers.programCounter.getHob())
             memory.write(registers.stackPointer, registers.programCounter.getLob())
             registers.programCounter = address.toUInt()
+            logger.debug { "Calling function at 0x${address.toInt().toHexCode(4)}" }
         }
     }
 }
 
 object CALL_A16: Opcode(0xCD) {
+    private val logger
+        get() = KotlinLogging.logger {}
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val address = memory.readNextShort()
         registers.stackPointer--
         memory.write(registers.stackPointer--, registers.programCounter.getHob())
         memory.write(registers.stackPointer, registers.programCounter.getLob())
         registers.programCounter = address.toUInt()
+        logger.debug { "Calling function at 0x${address.toInt().toHexCode(4)}" }
     }
 }
 

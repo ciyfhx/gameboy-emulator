@@ -93,8 +93,8 @@ class Registers {
     }
 
     fun setDE(value: UInt){
-        D = value and 0xF0u
-        E = value and 0x0Fu
+        D = (value and 0xFF00u) shr 8
+        E = value and 0x00FFu
     }
 
     fun getHL(): UInt {
@@ -102,8 +102,8 @@ class Registers {
     }
 
     fun setHL(value: UInt){
-        H = value and 0xF0u
-        L = value and 0x0Fu
+        H = (value and 0xFF00u) shr 8
+        L = value and 0x00FFu
     }
 
     fun setZeroFlag(set: Boolean){

@@ -2,19 +2,36 @@ package com.ciyfhx.emu
 
 import com.ciyfhx.emu.opcodes.combineBytes
 import com.ciyfhx.emu.opcodes.toHexCode
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.*
 
 
 interface MemoryMapper {
+    fun initCPU(cpu: CPU){}
     fun initMemory(memory: Memory){}
     fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry
     fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry
 }
 
-interface ReadOnlyMemoryMapper: MemoryMapper {
+class ReadOnlyMemoryException(memoryEntry: Memory.MemoryEntry) : Throwable("Tried to access read-only memory at 0x${memoryEntry.address.toHexCode(4)} with value 0x${memoryEntry.value.toHexCode()}")
+
+abstract class ReadOnlyMemoryMapper: MemoryMapper {
+
+    private val logger: KLogger
+        get() = KotlinLogging.logger {}
+    protected lateinit var memory: Memory
+
+    override fun initMemory(memory: Memory) {
+        super.initMemory(memory)
+        this.memory = memory
+    }
+
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
-//        throw ReadOnlyMemory()
-        println("Tried to access read-only memory")
+        logger.error(ReadOnlyMemoryException(memoryEntryWrite)){
+            "Tried to access read-only memory at 0x${memoryEntryWrite.address.toHexCode(4)} with value 0x${memoryEntryWrite.value.toHexCode()}"
+        }
+        memory.cpu.stop()
         return memoryEntryWrite
     }
 }
@@ -37,11 +54,16 @@ fun interface WriteListener {
 
 open class Memory(
     val memorySize: Int,
-    val registers: Registers
 ) {
-
+    private lateinit var cpu_: CPU
+    val cpu: CPU get() = cpu_
+    private val registers: Registers get() = cpu.registers
     private val memory = MemoryEntry.createArray(memorySize)
     private val writeListeners = mutableListOf<WriteListener>()
+
+    fun initCPU(cpu: CPU){
+        this.cpu_ = cpu
+    }
 
     fun addWriteListener(listener: WriteListener){
         writeListeners += listener
@@ -97,6 +119,15 @@ open class Memory(
         return combineBytes(hob, lob).toUShort()
     }
 
+    fun readByteArray(address: Int, data: ByteArray, length: Int) {
+        var i = 0
+        while(i < length) {
+            data[i] = memory[address + i].value.toByte()
+            i++
+        }
+    }
+
+
     fun copyByteArray(data: ByteArray, offset: Int = 0, length: Int = data.size): Int {
         var i = 0
         while (i < length) {
@@ -107,6 +138,7 @@ open class Memory(
         }
         return i
     }
+
 
     class MemoryEntry(
         val address: Int,

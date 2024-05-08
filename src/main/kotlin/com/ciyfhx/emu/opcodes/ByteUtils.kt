@@ -3,7 +3,7 @@ package com.ciyfhx.emu.opcodes
 import java.util.*
 
 fun combineBytes(hob: UByte, lob: UByte): UInt{
-    return (hob.toUInt() shr 8) or lob.toUInt()
+    return (hob.toUInt() shl 8) or lob.toUInt()
 }
 
 fun Int.toHexCode(take: Int = 2): String {
@@ -22,6 +22,18 @@ fun UInt.getHob(): UByte {
 
 fun UByte.getBit(position: Int): Boolean {
     return (this.toInt() shr position) and 1 == 1
+}
+
+fun UInt.getBit(position: Int): Boolean {
+    return (this.toInt() shr position) and 1 == 1
+}
+
+fun UInt.setBit(position: Int, value: Boolean): UInt {
+    return if(value) {
+        (this.toInt() or (1 shl position))
+    } else {
+        (this.toInt() and (1 shl position).inv())
+    }.toUInt()
 }
 
 fun UByte.setBit(position: Int, value: Boolean): UByte {

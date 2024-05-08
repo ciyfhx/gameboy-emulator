@@ -2,12 +2,12 @@ package com.ciyfhx.emu.mapper
 
 import com.ciyfhx.emu.*
 
-class BootRom : ReadOnlyMemoryMapper {
+class BootRom : ReadOnlyMemoryMapper() {
 
-    private lateinit var memory: Memory
+//    private lateinit var bootRom: ByteArray
 
     override fun initMemory(memory: Memory) {
-        this.memory = memory
+        super.initMemory(memory)
         loadBootRom()
     }
 
@@ -21,5 +21,5 @@ class BootRom : ReadOnlyMemoryMapper {
 }
 
 fun readBootRom(): ByteArray? {
-    return RawFileReader.readRawFile("bootrom.gb")
+    return RawFileReader.readRawFile("DMG_ROM.gb")
 }

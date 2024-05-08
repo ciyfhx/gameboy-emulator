@@ -2,11 +2,15 @@ package com.ciyfhx.emu
 
 import com.ciyfhx.emu.opcodes.*
 import com.ciyfhx.emu.opcodes.Opcode
-import java.util.*
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 class CPU(
-    val memory: Memory, val registers: Registers
+    val memory: Memory,
 ) {
+
+    private val logger = KotlinLogging.logger {}
+
+    val registers = Registers()
 
     var halt = false
     //master interrupt enable flag
@@ -23,7 +27,7 @@ class CPU(
 
         //One second has passed
         if(diff >= 1000){
-            println("Hz: $counter")
+            logger.debug { "Hz: $counter" }
             last = now
             counter = 0
         }
@@ -340,11 +344,12 @@ class CPU(
 
     private fun decode(){
         try {
-            Thread.sleep(1000)
+//            Thread.sleep(10)
+            val loc = registers.programCounter.toInt() - 1
             decodedOpcode = registeredOpcodes[opcode]
-            println("Decoded: 0x${opcode.toHexCode()} $decodedOpcode")
+//            if(loc>=0x1a)logger.debug { "Location: 0x${loc.toHexCode(4)}, Decoded: 0x${opcode.toHexCode()} $decodedOpcode" }
         }catch(e: IndexOutOfBoundsException){
-            println("Unknown opcode 0x${opcode.toHexCode()}")
+            logger.error(IllegalOpcodeException(opcode)) { "Unknown opcode 0x${opcode.toHexCode()}" }
         }
     }
 
@@ -354,3 +359,5 @@ class CPU(
     }
 
 }
+
+class IllegalOpcodeException(opcode: Int): Throwable("Unknown opcode 0x${opcode.toHexCode()}")
