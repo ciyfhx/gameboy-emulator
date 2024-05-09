@@ -16,6 +16,8 @@ class CPU(
     //master interrupt enable flag
     var ime = false
 
+    private val location: Int = registers.programCounter.toInt() - 1
+
     private var opcode: Int = 0
     private var decodedOpcode: Opcode = NOP
 
@@ -344,8 +346,6 @@ class CPU(
 
     private fun decode(){
         try {
-//            Thread.sleep(10)
-            val loc = registers.programCounter.toInt() - 1
             decodedOpcode = registeredOpcodes[opcode]
 //            if(loc>=0x1a)logger.debug { "Location: 0x${loc.toHexCode(4)}, Decoded: 0x${opcode.toHexCode()} $decodedOpcode" }
         }catch(e: IndexOutOfBoundsException){
