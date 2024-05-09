@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="gameboy-emulator-desktop">
+    <output-path>$PROJECT_DIR$/gameboy-emulator/build/libs</output-path>
+    <root id="archive" name="gameboy-emulator-desktop.jar">
+      <element id="module-output" name="gameboy-emulator.gameboy-emulator.desktopMain" />
+    </root>
+  </artifact>
+</component>

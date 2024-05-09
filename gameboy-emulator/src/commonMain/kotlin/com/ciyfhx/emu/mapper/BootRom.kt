@@ -4,8 +4,6 @@ import com.ciyfhx.emu.*
 
 class BootRom : ReadOnlyMemoryMapper() {
 
-//    private lateinit var bootRom: ByteArray
-
     override fun initMemory(memory: Memory) {
         super.initMemory(memory)
         loadBootRom()

@@ -24,5 +24,4 @@ class GameBoyMemory : Memory(0xFFFF) {
         registerMemoryMapper(PPU(videoRam), MemoryRegion(0xFF40..0xFF4B))
         registerMemoryMapper(DMA(), MemoryRegion(0xFF46..0xFF46))
     }
-
 }

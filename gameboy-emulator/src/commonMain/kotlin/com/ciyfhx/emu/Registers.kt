@@ -76,6 +76,9 @@ class Registers {
     var programCounter: UInt = 0u
         set(value) {
             invokeChangeListener()
+            if(value.toInt()>0x100){
+                println()
+            }
             field = value
         }
 

@@ -226,7 +226,7 @@ object RLA : Opcode(0x17) {
 
 object JR_S8 : Opcode(0x18) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val offset = memory.readNextByte().toInt()
+        val offset = memory.readNextByte().toByte().toInt()
         registers.programCounter = (registers.programCounter.toInt() + offset).toUInt()
     }
 }
@@ -1458,7 +1458,7 @@ object RET: Opcode(0xC9) {
         val lob = memory.read(registers.stackPointer++)
         val hob = memory.read(registers.stackPointer++)
         registers.programCounter = combineBytes(hob.value, lob.value)
-        logger.debug { "Returning from function at 0x${registers.programCounter.toInt().toHexCode(4)}" }
+        logger.debug { "Returning from function to 0x${registers.programCounter.toInt().toHexCode(4)}" }
     }
 }
 
