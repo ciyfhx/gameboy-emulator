@@ -36,15 +36,28 @@ abstract class ReadOnlyMemoryMapper: MemoryMapper {
     }
 }
 
+class DefaultMemoryMapper : MemoryMapper {
+    override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
+        return memoryEntryRead
+    }
+
+    override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
+        return memoryEntryWrite
+    }
+
+}
+
 data class MemoryRegion(
     val range: IntRange
 ): Comparable<MemoryRegion>{
 
     val start: Int = range.first
-    val end: Int = range.last - 1
+    val end: Int = range.last
 
     override fun compareTo(other: MemoryRegion): Int {
-        return start.compareTo(other.start)
+        return if(start <= other.end && other.start <= end) 0
+        else if(other.start > end) 1
+        else -1
     }
 }
 

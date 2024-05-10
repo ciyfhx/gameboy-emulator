@@ -13,6 +13,7 @@ class STAT: MemoryMapper {
     private var status: UByte = 0u
 
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
+        memoryEntryRead.value = status
         return memoryEntryRead
     }
 
@@ -58,6 +59,22 @@ class STAT: MemoryMapper {
     fun isCoincidenceFlagSet(): Boolean {
         return status.getBit(2)
     }
+
+    fun oamMode(){
+        status = (status and 0b00u) or 0b10u
+    }
+    fun vBlankMode(){
+        status = (status and 0b00u) or 0b01u
+    }
+
+    fun hBlankMode(){
+        status = (status and 0b00u)
+    }
+
+    fun transferMode(){
+        status = (status or 0b11u)
+    }
+
 
     fun modeFlag(): ModeFlag {
         (status and 0b11u).toInt().let {

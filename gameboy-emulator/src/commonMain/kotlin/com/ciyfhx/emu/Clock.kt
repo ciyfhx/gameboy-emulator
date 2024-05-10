@@ -24,11 +24,11 @@ class Clock(
         running = true
         val period = NANOSECOND / hz
         val future = executor.scheduleAtFixedRate(run, 0, period, TimeUnit.NANOSECONDS)
-        try {
-            future.get()
-        }catch (e: ExecutionException){
-            ClockExecutionException(e.cause!!).printStackTrace()
-        }
+//        try {
+//            future.get()
+//        }catch (e: ExecutionException){
+//            ClockExecutionException(e.cause!!).printStackTrace()
+//        }
     }
 
     /**

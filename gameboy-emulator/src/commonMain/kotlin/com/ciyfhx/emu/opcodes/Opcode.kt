@@ -1720,8 +1720,8 @@ object RST_5: Opcode(0xEF) {
 
 object LD_A_P_A8 : Opcode(0xF0) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val data = memory.read(memory.readNextByte().toUInt())
-        memory.write(registers.accumulator, data.value)
+        val data = memory.read((0xFF00 or memory.readNextByte().toInt()))
+        registers.accumulator = data.value.toUInt()
     }
 }
 

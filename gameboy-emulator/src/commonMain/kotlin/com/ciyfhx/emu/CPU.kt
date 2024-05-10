@@ -16,14 +16,14 @@ class CPU(
     //master interrupt enable flag
     var ime = false
 
-    private val location: Int = registers.programCounter.toInt() - 1
+    private val location: Int get() = registers.programCounter.toInt() - 1
 
     private var opcode: Int = 0
     private var decodedOpcode: Opcode = NOP
 
     var last = System.currentTimeMillis()
     var counter = 0
-    private val systemClock: Clock = Clock{
+    private val systemClock: Clock = Clock(){
         val now = System.currentTimeMillis()
         val diff = now - last
 
@@ -346,6 +346,9 @@ class CPU(
 
     private fun decode(){
         try {
+            if(location==0x1d){
+                println()
+            }
             decodedOpcode = registeredOpcodes[opcode]
 //            if(loc>=0x1a)logger.debug { "Location: 0x${loc.toHexCode(4)}, Decoded: 0x${opcode.toHexCode()} $decodedOpcode" }
         }catch(e: IndexOutOfBoundsException){
