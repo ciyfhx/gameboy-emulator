@@ -15,30 +15,28 @@ import com.ciyfhx.emu.GameBoyEmulationViewModel
 import com.ciyfhx.emu.gpu.Pixel
 import com.ciyfhx.emu.gpu.Tile
 
-class VRAMViewerWindowState(
+class BackgroundMapViewerWindowState(
     val title: String,
-    private val close: (VRAMViewerWindowState) -> Unit
+    private val close: (BackgroundMapViewerWindowState) -> Unit
 ) {
     fun close() = close(this)
 }
 
 @Composable
-fun VRAMViewer(){
-//    val hexString = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF".chunked(2) { it.toString().toInt(16).toByte() }.toByteArray()
-//    val tiles = List(16) { Tile(hexString) }
+fun BackgroundMapViewer(){
     val context = viewModel<GameBoyEmulationViewModel>()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawBackgroundTiles(context.vramTiles)
+            drawBackgroundTiles(context.backgroundTiles)
         }
     }
 }
 
 private fun DrawScope.drawBackgroundTiles(tiles: List<Tile>) {
-    val tileSize = size.width / 16
-    val numRows = 24
-    val numCols = 16
+    val tileSize = size.width / 32
+    val numRows = 32
+    val numCols = 32
     val borderWidth = 2f
 
     for (i in 0 until numRows) {

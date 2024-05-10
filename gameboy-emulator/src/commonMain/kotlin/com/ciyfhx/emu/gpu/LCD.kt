@@ -7,7 +7,7 @@ class LCD (
 ){
 
     private var _x = 0
-    private var _y = 0
+    var _y = 0
 
     val x get() = _x
     val y get() = _y

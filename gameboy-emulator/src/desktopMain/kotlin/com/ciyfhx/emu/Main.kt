@@ -16,11 +16,13 @@ class ApplicationState {
     var debugScreen: DebugScreenWindowState? = null
     var display: DisplayScreenWindowState? = null
     var vramViewer: VRAMViewerWindowState? = null
+    var backgroundMapViewer: BackgroundMapViewerWindowState? = null
 
     init {
         debugScreen = DebugScreenWindowState("GameBoy Emulator (Debug)")
         display = DisplayScreenWindowState("GameBoy Emulator")
         vramViewer = VRAMViewerWindowState("GameBoy Emulator (VRAM)")
+        backgroundMapViewer = BackgroundMapViewerWindowState("GameBoy Emulator (Background Map)")
     }
 
     private fun DisplayScreenWindowState(
@@ -47,6 +49,14 @@ class ApplicationState {
         vramViewer = null
     }
 
+    private fun BackgroundMapViewerWindowState(
+        title: String
+    ) = BackgroundMapViewerWindowState(
+        title,
+    ) {
+        vramViewer = null
+    }
+
 }
 
 class ViewModelStoreOwner(override val viewModelStore: ViewModelStore = ViewModelStore()) : ViewModelStoreOwner
@@ -66,7 +76,8 @@ fun main() =
             ViewModelStoreOwnerProvider {
                 applicationState.debugScreen?.let { DebugScreen(it) }
                 applicationState.display?.let { DisplayScreen(it) }
-                applicationState.vramViewer?.let { VRAMViewerScreen(it) }
+//                applicationState.vramViewer?.let { VRAMViewerScreen(it) }
+                applicationState.backgroundMapViewer?.let { BackgroundMapViewerScreen(it) }
             }
         }
     }

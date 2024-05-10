@@ -17,7 +17,7 @@ class PPU(
 
     private val lcdc: LCDC = LCDC() //LCD Control (R/W)
     private val stat: STAT = STAT() //LCDC Status (R/W)
-    private var scy: UByte = 30u  //Scroll Y (R/W)
+    private var scy: UByte = 0u  //Scroll Y (R/W)
     private var scx: UByte = 0u  //Scroll X (R/W)
     private var ly: UByte = 0u  //LCDC Y-Coordinate (R)
     private var lyc: UByte = 0u //LY Compare (R/W)
@@ -37,8 +37,7 @@ class PPU(
 
     private var xClock = 0
 
-    private var counter = 0
-    val clock = Clock(1_048_576){
+    val clock = Clock(1048576){
 
         when(stat.modeFlag()){
             STAT.ModeFlag.SEARCHING_OAM -> {
@@ -71,13 +70,13 @@ class PPU(
             }
         }
 
-        if(!fetcher.containsPixelBuffer())fetcher.readPixel()
 
         xClock++
         if(xClock == 114) {
             xClock = 0
             ly++
             if(ly.toInt() == 154)ly = 0u
+//            lcd._y = ly.toInt()
         }
     }
 
@@ -100,26 +99,17 @@ class PPU(
     }
 
     private fun pixelTransfer(){
-        if(pixelFifo.capacity() >= 8 && fetcher.containsPixelBuffer()) {
-            val pixelData = fetcher.retrievePixelBuffer()
-            for(pixel in pixelData){
-                pixelFifo.push(pixel)
+        for(i in 0 until 2){
+            if(pixelFifo.capacity() >= 8 && !fetcher.containsPixelBuffer()) {
+                fetcher.readPixel()
+                val pixelData = fetcher.retrievePixelBuffer()
+                for(pixel in pixelData){
+                    pixelFifo.push(pixel)
+                }
             }
         }
 
-        if(!pixelFifo.isEmpty())lcd.push(pixelFifo.pop())
-
-
-
-        //TESTING
-//        try {
-//            val pixelData = ByteArray(16)
-//            memory.readByteArray(getTileDataAddress(0x02u), pixelData, 16)
-//            val tile = Tile(pixelData)
-//            println(tile)
-//        }catch (e: Exception){
-//            e.printStackTrace()
-//        }
+        for (i in 0 until 4)if(pixelFifo.size()>8)lcd.push(pixelFifo.pop())
     }
     private fun h_blank(){
     }
@@ -161,7 +151,7 @@ class PPU(
         when(memoryEntryWrite.address){
             0xFF40 -> lcdc.write(memoryEntryWrite)
             0xFF41 -> stat.write(memoryEntryWrite)
-//            0xFF42 -> scy = memoryEntryWrite.value
+            0xFF42 -> scy = memoryEntryWrite.value
             0xFF43 -> scx = memoryEntryWrite.value
             0xFF44 -> ly =  memoryEntryWrite.value
             0xFF45 -> lyc = memoryEntryWrite.value
@@ -239,17 +229,22 @@ class PPU(
             }
 
             val xCoord = (ppu.scx.toInt() / 8 + xCounter) and 0x1F
-            val yCoord = (ppu.ly + ppu.scy).toInt() and 0xFF
+            val yCoord =  ((ppu.ly + ppu.scy).toInt() and 0xFF) / 0x8
+            val yLine = (ppu.ly + ppu.scy).toInt() % 8
 
-            val offsetAddress = 0x1F * (yCoord / 0x8) + xCoord
+            val offsetAddress = 0x1F * yCoord + xCoord
 
             val baseAddress = 0x9800
             val mapAddress =  baseAddress + offsetAddress
             val tileNo = ppu.memory.read(mapAddress)
             val tileAddress = ppu.getTileDataAddress(tileNo.value)
-            val dataAddress = tileAddress + 2 * ((ppu.ly + ppu.scy).toInt() % 8)
+            val dataAddress = tileAddress + 2 * yLine
             val d1 = ppu.memory.read(dataAddress).value
             val d2 = ppu.memory.read(dataAddress + 1).value
+
+            if(xCoord == 0x4 && yCoord == 0x8){
+                println()
+            }
 
             for(index in pixelBuffer.indices){
                 val i = (index % 8)
@@ -258,7 +253,7 @@ class PPU(
                 val pixel = ((d1.toInt() and mask) shr offset) or (((d2.toInt() and mask) shr offset) shl 1)
                 pixelBuffer[index] = Pixel.fromInt(pixel)
             }
-            xCounter+=1
+            xCounter++
             updatePixelBuffer = false
         }
 

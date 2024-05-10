@@ -25,6 +25,10 @@ class GameBoyEmulationViewModel : ViewModel() {
         Tile(it.toByteArray())
     }
 
+    val backgroundTiles: List<Tile> get() = memory.value.videoRam.tileMap1.toList().map {
+        vramTiles[it.toInt()]
+    }
+
     private val logger: KLogger
         get() = KotlinLogging.logger {}
 
