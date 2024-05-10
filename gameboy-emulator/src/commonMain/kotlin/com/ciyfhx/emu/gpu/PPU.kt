@@ -17,7 +17,7 @@ class PPU(
 
     private val lcdc: LCDC = LCDC() //LCD Control (R/W)
     private val stat: STAT = STAT() //LCDC Status (R/W)
-    private var scy: UByte = 0u  //Scroll Y (R/W)
+    private var scy: UByte = 30u  //Scroll Y (R/W)
     private var scx: UByte = 0u  //Scroll X (R/W)
     private var ly: UByte = 0u  //LCDC Y-Coordinate (R)
     private var lyc: UByte = 0u //LY Compare (R/W)
@@ -133,25 +133,6 @@ class PPU(
         this.memory = memory
     }
 
-//    private fun readTile(indexes: Byte): Tile{
-//        val address = getFetchAddress(indexes).
-//        if(lcdc.getBgAndWindowTileDataSelect()){
-//            //0x8000 method
-//            val baseAddress = 0x8000
-//            val address = baseAddress + (indexes.toUByte().toInt() * 8)
-//            val pixelData = ByteArray(16)
-//            memory.readByteArray(address, pixelData, 16)
-//            return Tile(pixelData)
-//        }else{
-//            //0x8800 method
-//            val baseAddress = 0x8800
-//            val address = baseAddress + (indexes.toInt() * 8)
-//            val pixelData = ByteArray(16)
-//            memory.readByteArray(address, pixelData, 16)
-//            return Tile(pixelData)
-//        }
-//    }
-
     internal fun getTileDataAddress(indexes: UByte) =
         if(lcdc.getBgAndWindowTileDataSelect()){
             //0x8000 method
@@ -180,7 +161,7 @@ class PPU(
         when(memoryEntryWrite.address){
             0xFF40 -> lcdc.write(memoryEntryWrite)
             0xFF41 -> stat.write(memoryEntryWrite)
-            0xFF42 -> scy = memoryEntryWrite.value
+//            0xFF42 -> scy = memoryEntryWrite.value
             0xFF43 -> scx = memoryEntryWrite.value
             0xFF44 -> ly =  memoryEntryWrite.value
             0xFF45 -> lyc = memoryEntryWrite.value
@@ -269,24 +250,12 @@ class PPU(
             val dataAddress = tileAddress + 2 * ((ppu.ly + ppu.scy).toInt() % 8)
             val d1 = ppu.memory.read(dataAddress).value
             val d2 = ppu.memory.read(dataAddress + 1).value
-//
-////            val pixelData = ByteArray(16)
-////            ppu.memory.readByteArray(tileAddress, pixelData, 16)
-////            val tile = Tile(pixelData)
-//
-////            val xCoord = ((ppu.scx/8u).toInt() + xCounter) and 0x1F
-////            val yCoord = ((ppu.scy/8u).toInt() + xCounter) and 0x1F
-//
-////
-//            val xOffset = ppu.memory.read(tileAddress).value
-//            val yOffset = ppu.memory.read(tileAddress).value
-////            val d2 = ppu.memory.read(tileAddress + 1).value
-//
+
             for(index in pixelBuffer.indices){
                 val i = (index % 8)
                 val offset = 7 - i
                 val mask =  0x1 shl offset
-                val pixel = ((d1.toInt() and mask) shr offset) or ((d2.toInt() and mask) shr offset-1)
+                val pixel = ((d1.toInt() and mask) shr offset) or (((d2.toInt() and mask) shr offset) shl 1)
                 pixelBuffer[index] = Pixel.fromInt(pixel)
             }
             xCounter+=1
@@ -337,6 +306,7 @@ data class Tile(
         if(data.size != 16){
             val error = IllegalArgumentException("Tile must be in 16 bytes")
             logger.error(error) { "Tile must be in 16 bytes" }
+            throw error
         }
     }
 
@@ -349,6 +319,7 @@ data class Tile(
         if(index > 72 || index < 0){
             val error = IllegalArgumentException("Out of Range")
             logger.error(error) { "Out of Range" }
+            throw error
         }
 
         val d1 = data[(index / 8) * 2]
@@ -356,7 +327,7 @@ data class Tile(
         val i = (index % 8)
         val offset = 7 - i
         val mask =  0x1 shl offset
-        val pixel = ((d1.toInt() and mask) shr offset) or ((d2.toInt() and mask) shr offset-1)
+        val pixel = ((d1.toInt() and mask) shr offset) or (((d2.toInt() and mask) shr offset) shl 1)
         return Pixel.fromInt(pixel)
     }
 
@@ -390,7 +361,10 @@ data class Tile(
 
 fun main(){
     val hexString = "3C7E4242424242427E5E7E0A7C56387C"
+//    val hexString = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
     val byteArray = hexString.chunked(2) { it.toString().toInt(16).toByte() }.toByteArray()
     val test = Tile(byteArray)
     println(test)
+//    println(test.pixelAt(7))
+//    println(test.pixelAt(6))
 }

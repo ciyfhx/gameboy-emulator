@@ -43,3 +43,8 @@ fun UByte.setBit(position: Int, value: Boolean): UByte {
         (this.toInt() and (1 shl position).inv())
     }.toUByte()
 }
+
+fun Boolean.toByte(): Byte {
+    return if (this) 1.toByte()
+    else 0.toByte()
+}

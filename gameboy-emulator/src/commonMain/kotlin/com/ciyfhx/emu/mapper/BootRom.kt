@@ -19,5 +19,5 @@ class BootRom : ReadOnlyMemoryMapper() {
 }
 
 fun readBootRom(): ByteArray? {
-    return RawFileReader.readRawFile("DMG_ROM.gb")
+    return RawFileReader.readRawFileFromResources("bootrom.gb")
 }

@@ -346,7 +346,7 @@ class CPU(
 
     private fun decode(){
         try {
-            if(location==0x1d){
+            if(location==0x95){
                 println()
             }
             decodedOpcode = registeredOpcodes[opcode]

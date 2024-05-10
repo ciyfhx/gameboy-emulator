@@ -9,19 +9,18 @@ import androidx.compose.ui.window.application
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import com.ciyfhx.emu.viewer.DebugScreen
-import com.ciyfhx.emu.viewer.DebugScreenWindowState
-import com.ciyfhx.emu.viewer.DisplayScreen
-import com.ciyfhx.emu.viewer.DisplayScreenWindowState
+import com.ciyfhx.emu.viewer.*
 
 class ApplicationState {
 
     var debugScreen: DebugScreenWindowState? = null
     var display: DisplayScreenWindowState? = null
+    var vramViewer: VRAMViewerWindowState? = null
 
     init {
         debugScreen = DebugScreenWindowState("GameBoy Emulator (Debug)")
         display = DisplayScreenWindowState("GameBoy Emulator")
+        vramViewer = VRAMViewerWindowState("GameBoy Emulator (VRAM)")
     }
 
     private fun DisplayScreenWindowState(
@@ -39,6 +38,15 @@ class ApplicationState {
     ) {
         debugScreen = null
     }
+
+    private fun VRAMViewerWindowState(
+        title: String
+    ) = VRAMViewerWindowState(
+        title,
+    ) {
+        vramViewer = null
+    }
+
 }
 
 class ViewModelStoreOwner(override val viewModelStore: ViewModelStore = ViewModelStore()) : ViewModelStoreOwner
@@ -58,6 +66,7 @@ fun main() =
             ViewModelStoreOwnerProvider {
                 applicationState.debugScreen?.let { DebugScreen(it) }
                 applicationState.display?.let { DisplayScreen(it) }
+                applicationState.vramViewer?.let { VRAMViewerScreen(it) }
             }
         }
     }

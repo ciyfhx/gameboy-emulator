@@ -47,9 +47,13 @@ object RLC_B: Opcode(0x00){
 object RL_C: Opcode(0x11){
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val bit = cpu.registers.C.getBit(7)
+        val carry = cpu.registers.getCarryFlag().toByte()
 
         cpu.registers.C = (cpu.registers.C shl 1)
-
+        cpu.registers.C = (cpu.registers.C or carry.toUInt())
+        registers.setZeroFlag(registers.C == 0u)
+        registers.setSubtractFlag(false)
+        registers.setHalfCarryFlag(false)
         cpu.registers.setCarryFlag(bit)
     }
 }

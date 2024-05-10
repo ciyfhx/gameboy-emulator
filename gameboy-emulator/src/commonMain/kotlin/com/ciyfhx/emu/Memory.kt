@@ -141,12 +141,11 @@ open class Memory(
     }
 
 
-    fun copyByteArray(data: ByteArray, offset: Int = 0, length: Int = data.size): Int {
+    fun copyByteArray(data: ByteArray, offset: Int = 0, length: Int = data.size, memoryOffset: Int = 0): Int {
         var i = 0
         while (i < length) {
-            val memoryEntry = memory[i + offset]
-            memoryEntry.value = data[i].toUByte()
-//            memory[i + offset] = MemoryEntry(i + offset, data[i].toUByte())
+            val memoryEntry = memory[i + memoryOffset]
+            memoryEntry.value = data[i + offset].toUByte()
             i++
         }
         return i

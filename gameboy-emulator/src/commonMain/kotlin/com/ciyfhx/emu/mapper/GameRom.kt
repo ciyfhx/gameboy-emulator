@@ -23,7 +23,7 @@ class GameRom(
         super.initMemory(memory)
         bootRom.initMemory(memory)
         data = readRom(romLocation)
-        memory.copyByteArray(data, 0x0100, data.size)//0x7FFF
+        memory.copyByteArray(data, 0x0100, data.size - 0x0101, 0x0100)//0x7FFF
     }
 
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
@@ -57,7 +57,7 @@ class GameRom(
 fun readRom(romLocation: String): ByteArray {
     val path = Path(romLocation)
     if (Files.exists(path))
-        return RawFileReader.readRawFile(romLocation)!!
+        return RawFileReader.readRawFileFromPath(romLocation)
     else
         throw FileNotFoundException("Unable to find rom")
 }

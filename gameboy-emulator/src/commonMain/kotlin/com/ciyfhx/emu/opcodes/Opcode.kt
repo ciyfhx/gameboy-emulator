@@ -210,17 +210,15 @@ object LD_D_D8 : Opcode(0x16) {
 
 object RLA : Opcode(0x17) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val carry = registers.getCarryFlag()
+        val bit = cpu.registers.accumulator.getBit(7)
+        val carry = registers.getCarryFlag().toByte()
+
         registers.accumulator = registers.accumulator shl 1
-        registers.accumulator = if(carry){
-            registers.accumulator or 1u
-        }else{
-            registers.accumulator or 0u
-        }
-        registers.setZeroFlag(false)
+        registers.accumulator = registers.accumulator or carry.toUInt()
+        registers.setZeroFlag(registers.accumulator == 0u)
         registers.setSubtractFlag(false)
         registers.setHalfCarryFlag(false)
-//        registers.setCarryFlag(carry == 0b1000_0000)
+        cpu.registers.setCarryFlag(bit)
     }
 }
 

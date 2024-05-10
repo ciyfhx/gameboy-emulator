@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.lifecycle.ViewModel
 import com.ciyfhx.emu.gpu.LCD
+import com.ciyfhx.emu.gpu.Tile
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -19,6 +20,10 @@ class GameBoyEmulationViewModel : ViewModel() {
 
     private val _lcd = mutableStateOf(memory.value.lcd, neverEqualPolicy())
     val lcd: State<LCD> = _lcd
+
+    val vramTiles: List<Tile> get() = memory.value.videoRam.tileData.toList().chunked(16).map {
+        Tile(it.toByteArray())
+    }
 
     private val logger: KLogger
         get() = KotlinLogging.logger {}
