@@ -8,17 +8,20 @@ import com.ciyfhx.emu.mapper.*
 class GameBoyMemory : Memory(0xFFFF) {
 
     private val _videoRam: VideoRam
-    private val ppu: PPU
+    private val _ppu: PPU
 
     val lcd: LCD
-        get() = ppu.lcd
+        get() = _ppu.lcd
+
+    val ppu: PPU
+        get() = _ppu
 
     val videoRam: VideoRam
         get() = _videoRam
 
     init {
         _videoRam = VideoRam()
-        ppu = PPU(_videoRam)
+        _ppu = PPU(_videoRam)
         //Define memory region
         registerMemoryMapper(
             GameRom("C:\\Users\\pehzi\\Downloads\\bgb\\bgbtest.gb"),
@@ -33,7 +36,7 @@ class GameBoyMemory : Memory(0xFFFF) {
         registerMemoryMapper(Joypad(), MemoryRegion(0xFF00..0xFF00))
         registerMemoryMapper(Audio(), MemoryRegion(0xFF10..0xFF26))
 
-        registerMemoryMapper(ppu, MemoryRegion(0xFF40..0xFF4B))
+        registerMemoryMapper(_ppu, MemoryRegion(0xFF40..0xFF4B))
         registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xFF80..0xFFFE))//HRAM
 //        registerMemoryMapper(DMA(), MemoryRegion(0xFF46..0xFF46))
     }
@@ -41,12 +44,12 @@ class GameBoyMemory : Memory(0xFFFF) {
 
     fun start(){
         cpu.start()
-        ppu.start()
+        _ppu.start()
     }
 
     fun stop(){
         cpu.stop()
-        ppu.stop()
+        _ppu.stop()
     }
 
 }

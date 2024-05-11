@@ -24,8 +24,6 @@ class VRAMViewerWindowState(
 
 @Composable
 fun VRAMViewer(){
-//    val hexString = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF".chunked(2) { it.toString().toInt(16).toByte() }.toByteArray()
-//    val tiles = List(16) { Tile(hexString) }
     val context = viewModel<GameBoyEmulationViewModel>()
 
     Box(modifier = Modifier.fillMaxSize()) {

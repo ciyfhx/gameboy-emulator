@@ -9,9 +9,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ciyfhx.emu.GameBoyEmulationViewModel
+import com.ciyfhx.emu.ViewPort
 import com.ciyfhx.emu.gpu.Pixel
 import com.ciyfhx.emu.gpu.Tile
 
@@ -28,16 +30,17 @@ fun BackgroundMapViewer(){
 
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawBackgroundTiles(context.backgroundTiles)
+            drawBackgroundTiles(context.backgroundTiles, context.viewPort)
         }
     }
 }
 
-private fun DrawScope.drawBackgroundTiles(tiles: List<Tile>) {
+private fun DrawScope.drawBackgroundTiles(tiles: List<Tile>, viewPort: ViewPort) {
     val tileSize = size.width / 32
     val numRows = 32
     val numCols = 32
     val borderWidth = 2f
+    val viewPortWidth = 3f
 
     for (i in 0 until numRows) {
         for (j in 0 until numCols) {
@@ -68,4 +71,14 @@ private fun DrawScope.drawBackgroundTiles(tiles: List<Tile>) {
             }
         }
     }
+
+    val pixelSize = tileSize / 8
+    //Draw viewport
+    drawRect(
+        color = Color.Red,
+        topLeft = Offset(pixelSize*viewPort.x, pixelSize*viewPort.y),
+        style = Stroke(width = viewPortWidth),
+        size = Size(viewPort.width*pixelSize, viewPort.height*pixelSize)
+    )
+
 }

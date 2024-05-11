@@ -9,6 +9,13 @@ import com.ciyfhx.emu.gpu.Tile
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 
+data class ViewPort(
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int,
+)
+
 class GameBoyEmulationViewModel : ViewModel() {
     //TODO: Create wrapper class for creating components
     private val _memory = mutableStateOf(GameBoyMemory(), neverEqualPolicy())
@@ -27,6 +34,13 @@ class GameBoyEmulationViewModel : ViewModel() {
 
     val backgroundTiles: List<Tile> get() = memory.value.videoRam.tileMap1.toList().map {
         vramTiles[it.toInt()]
+    }
+
+    val viewPort: ViewPort get() = memory.value.ppu.let {
+        val scyValue =  it.scxValue.toInt()
+        val scxValue =  it.scxValue.toInt()
+        ViewPort(scxValue, scyValue,
+            scxValue + 160, scyValue + 144)
     }
 
     private val logger: KLogger
