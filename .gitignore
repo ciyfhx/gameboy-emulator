@@ -1,4 +1,4 @@
 # Project exclude paths
 /.gradle/
 /build/
-/gameboy-emulator/build/
+/gameboy-emulator-main/build/
