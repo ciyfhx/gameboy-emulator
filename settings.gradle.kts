@@ -28,4 +28,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":gameboy-emulator")
+include(":gameboy-emulator-main")
