@@ -312,9 +312,8 @@ object LD_HL_D16 : Opcode(0x21) {
 
 object LD_P_HL_PLUS_A : Opcode(0x22) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val value = registers.accumulator
+        memory.write(registers.getHL(), registers.accumulator.getLob())
         registers.setHL(registers.getHL() + 1u)
-        memory.write(registers.getHL(), value.getLob())
     }
 }
 
@@ -382,7 +381,7 @@ object DAA : Opcode(0x27) {
 
 object JR_Z_S8 : Opcode(0x28) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val offset = memory.readNextByte().toInt()
+        val offset = memory.readNextByte().toByte().toInt()
         if(registers.getZeroFlag()){
             registers.programCounter = (registers.programCounter.toInt() + offset).toUInt()
         }
@@ -402,8 +401,8 @@ object ADD_HL_HL : Opcode(0x29) {
 
 object LD_A_P_HL_PLUS : Opcode(0x2A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.setHL(registers.getHL() + 1u)
         registers.accumulator = memory.read(registers.getHL()).value.toUInt()
+        registers.setHL(registers.getHL() + 1u)
     }
 }
 
@@ -542,8 +541,8 @@ object ADD_HL_SP : Opcode(0x39) {
 
 object LD_A_HL_MINUS : Opcode(0x3A) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.setHL(registers.getHL() - 1u)
         registers.accumulator = memory.read(registers.getHL()).value.toUInt()
+        registers.setHL(registers.getHL() - 1u)
     }
 }
 
@@ -1812,13 +1811,13 @@ object RST_7: Opcode(0xB8) {
 
 object ALU {
     fun add(registers: Registers, operand1: UInt, operand2: UInt): UInt{
-        val result = operand1 + operand2
-        val carry = result > 0xFFu
+        val sum = operand1 + operand2
+        val result = sum and 0xFFu
 
         registers.setZeroFlag(result == 0u)
         registers.setSubtractFlag(false)
-        registers.setHalfCarryFlag((operand1.getLob() + operand2.getLob()) > 0x0Fu)
-        registers.setCarryFlag(carry)
+        registers.setHalfCarryFlag(((operand1 and 0xFu) + (operand2 and 0xFu)) > 0xFu)
+        registers.setCarryFlag(sum > 0xFFu)
 
         return result
     }
@@ -1830,13 +1829,13 @@ object ALU {
     }
 
     fun sub(registers: Registers, operand1: UInt, operand2: UInt): UInt{
-        val result = operand1 - operand2
-        val carry = operand2 > operand1
+        val sum = operand1 - operand2
+        val result = sum and 0xFFu
 
         registers.setZeroFlag(result == 0u)
         registers.setSubtractFlag(true)
-        registers.setHalfCarryFlag(operand1.getLob() < operand2.getLob())
-        registers.setCarryFlag(carry)
+        registers.setHalfCarryFlag((operand1 and 0xFu) < (operand2 and 0xFu))
+        registers.setCarryFlag(sum > 0xFFu)
 
         return result
     }
