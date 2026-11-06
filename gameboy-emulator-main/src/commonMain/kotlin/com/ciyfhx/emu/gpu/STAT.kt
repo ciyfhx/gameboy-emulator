@@ -19,8 +19,7 @@ class STAT: MemoryMapper {
 
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
         assert(memoryEntryWrite.address == 0xFF41)
-        val value = memoryEntryWrite.value
-        status = value
+        status = (status and 0b11u) or (memoryEntryWrite.value and 0xFCu)
         return memoryEntryWrite
     }
 
@@ -61,18 +60,18 @@ class STAT: MemoryMapper {
     }
 
     fun oamMode(){
-        status = (status and 0b00u) or 0b10u
+        status = (status and 0xFCu) or 0b10u
     }
     fun vBlankMode(){
-        status = (status and 0b00u) or 0b01u
+        status = (status and 0xFCu) or 0b01u
     }
 
     fun hBlankMode(){
-        status = (status and 0b00u)
+        status = (status and 0xFCu)
     }
 
     fun transferMode(){
-        status = (status or 0b11u)
+        status = (status and 0xFCu) or 0b11u
     }
 
 
