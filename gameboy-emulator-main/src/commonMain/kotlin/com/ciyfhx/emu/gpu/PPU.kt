@@ -4,6 +4,7 @@ import com.ciyfhx.emu.Clock
 import com.ciyfhx.emu.Memory
 import com.ciyfhx.emu.MemoryMapper
 import com.ciyfhx.emu.mapper.VideoRam
+import com.ciyfhx.emu.opcodes.toHexCode
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -63,11 +64,17 @@ class PPU(
             STAT.ModeFlag.HBLANK -> {
                 h_blank()
                 if(xClock == 113){
-                    if(ly.toInt()<=143){
-                        incrementLy()
+                    incrementLy()
+                    if(ly.toInt() == 144){
+                        stat.vBlankMode()
+                    }else{
                         stat.oamMode()
                     }
-                    else stat.vBlankMode()
+//                    if(ly.toInt()<=143){
+//                        incrementLy()
+//                        stat.oamMode()
+//                    }
+//                    else stat.vBlankMode()
                 }
             }
             STAT.ModeFlag.VBLANK -> {
@@ -174,7 +181,7 @@ class PPU(
             0xFF49 -> obj2 = memoryEntryWrite.value
             0xFF4A -> wy = memoryEntryWrite.value
             0xFF4B -> wx = memoryEntryWrite.value
-            else -> throw IllegalArgumentException("Unknown memory entry ${memoryEntryWrite.address}")
+            else -> logger.warn { "Ignoring write to unmapped PPU address 0x${memoryEntryWrite.address.toHexCode(4)}" }
         }
         return memoryEntryWrite
     }
