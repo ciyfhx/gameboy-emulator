@@ -76,9 +76,6 @@ class Registers {
     var programCounter: UInt = 0u
         set(value) {
             invokeChangeListener()
-            if(value.toInt()>0x100){
-                println()
-            }
             field = value
         }
 
@@ -155,6 +152,19 @@ class Registers {
 
     fun getCarryFlag(): Boolean{
         return flag.contains(Flag.CARRY)
+    }
+
+    fun getF(): UInt =
+        (if (getZeroFlag()) 0x80u else 0u) or
+                (if (getSubtractFlag()) 0x40u else 0u) or
+                (if (getHalfCarryFlag()) 0x20u else 0u) or
+                (if (getCarryFlag()) 0x10u else 0u)
+
+    fun setF(value: UInt) {
+        setZeroFlag((value and 0x80u) != 0u)
+        setSubtractFlag((value and 0x40u) != 0u)
+        setHalfCarryFlag((value and 0x20u) != 0u)
+        setCarryFlag((value and 0x10u) != 0u)
     }
 
 }
