@@ -87,8 +87,8 @@ class Registers {
     }
 
     fun setBC(value: UInt){
-        B = value and 0xF0u
-        C = value and 0x0Fu
+        B = (value and 0xFF00u) shr 8
+        C = value and 0x00FFu
     }
 
     fun getDE(): UInt {
