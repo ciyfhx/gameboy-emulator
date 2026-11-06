@@ -5,7 +5,7 @@ import com.ciyfhx.emu.gpu.LCD
 import com.ciyfhx.emu.gpu.PPU
 import com.ciyfhx.emu.mapper.*
 
-class GameBoyMemory : Memory(0xFFFF) {
+class GameBoyMemory : Memory(0x10000) {
 
     private val _videoRam: VideoRam
     private val _ppu: PPU
@@ -24,7 +24,7 @@ class GameBoyMemory : Memory(0xFFFF) {
         _ppu = PPU(_videoRam)
         //Define memory region
         registerMemoryMapper(
-            GameRom("/Users/pehziheng/Downloads/bgbw64/bgbtest.gb"),
+            GameRom("E:\\Programming\\2026\\gameboy-emulator\\roms\\bgbtest.gb"),
             MemoryRegion(0x0000..0x7FFF)
         )
         registerMemoryMapper(_videoRam, MemoryRegion(0x8000..0x9FFF))
