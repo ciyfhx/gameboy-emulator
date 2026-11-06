@@ -444,13 +444,15 @@ object LD_L_D8 : Opcode(0x2E) {
 
 object CPL : Opcode(0x2F) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.accumulator = registers.accumulator.inv()
+        registers.accumulator = registers.accumulator.inv() and 0xFFu
+        registers.setSubtractFlag(true)
+        registers.setHalfCarryFlag(true)
     }
 }
 
 object JR_NC_S8 : Opcode(0x30) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val offset = memory.readNextByte().toInt()
+        val offset = memory.readNextByte().toByte().toInt()
         if(!registers.getCarryFlag()){
             registers.programCounter = (registers.programCounter.toInt() + offset).toUInt()
         }
@@ -521,7 +523,7 @@ object SCF : Opcode(0x37) {
 
 object JR_C_S8 : Opcode(0x38) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val offset = memory.readNextByte().toInt()
+        val offset = memory.readNextByte().toByte().toInt()
         if(registers.getCarryFlag()){
             registers.programCounter = (registers.programCounter.toInt() + offset).toUInt()
         }
@@ -824,7 +826,7 @@ object LD_H_L : Opcode(0x65) {
 object LD_H_P_HL : Opcode(0x66) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val data = memory.read(registers.getHL())
-        registers.setHL(data.value.toUInt())
+        registers.H = data.value.toUInt()
     }
 }
 
@@ -920,7 +922,8 @@ object LD_P_HL_L : Opcode(0x75) {
 
 object HALT : Opcode(0x76) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        cpu.stop()
+//        cpu.stop()
+        cpu.halt = true
     }
 }
 
@@ -1060,7 +1063,7 @@ object ADC_A_H : Opcode(0x8C) {
 
 object ADC_A_L : Opcode(0x8D) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.D)
+        registers.accumulator = ALU.adc(registers, registers.accumulator, registers.L)
     }
 }
 
@@ -1390,8 +1393,9 @@ object POP_BC: Opcode(0xC1) {
 
 object JP_NZ_A16: Opcode(0xC2) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
         if(!registers.getZeroFlag()){
-            registers.programCounter = memory.readNextShort().toUInt()
+            registers.programCounter = address.toUInt()
         }
     }
 }
@@ -1461,8 +1465,9 @@ object RET: Opcode(0xC9) {
 
 object JP_Z_A16: Opcode(0xCA) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
         if(registers.getZeroFlag()){
-            registers.programCounter = memory.readNextShort().toUInt()
+            registers.programCounter = address.toUInt()
         }
     }
 }
@@ -1530,8 +1535,9 @@ object POP_DE: Opcode(0xD1) {
 
 object JP_NC_A16: Opcode(0xD2) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
+        val address = memory.readNextShort()
         if(!registers.getCarryFlag()){
-            registers.programCounter = memory.readNextShort().toUInt()
+            registers.programCounter = address.toUInt()
         }
     }
 }
@@ -1594,8 +1600,9 @@ object RETI: Opcode(0xD9) {
 
 object JP_C_A16: Opcode(0xDA) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        if(!registers.getCarryFlag()){
-            registers.programCounter = memory.readNextShort().toUInt()
+        val address = memory.readNextShort()
+        if(registers.getCarryFlag()){
+            registers.programCounter = address.toUInt()
         }
     }
 }
@@ -1603,7 +1610,7 @@ object JP_C_A16: Opcode(0xDA) {
 object CALL_C_A16: Opcode(0xDC) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         val address = memory.readNextShort()
-        if(!registers.getCarryFlag()){
+        if(registers.getCarryFlag()){
             registers.stackPointer--
             memory.write(registers.stackPointer--, registers.programCounter.getHob())
             memory.write(registers.stackPointer, registers.programCounter.getLob())
@@ -1724,9 +1731,8 @@ object LD_A_P_A8 : Opcode(0xF0) {
 
 object POP_AF: Opcode(0xC1) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
-        val lob = memory.read(registers.stackPointer++)
-        val hob = memory.read(registers.stackPointer++)
-        registers.accumulator = combineBytes(hob.value, lob.value)
+        registers.setF(memory.read(registers.stackPointer++).value.toUInt())
+        registers.accumulator = memory.read(registers.stackPointer++).value.toUInt()
     }
 }
 
@@ -1746,8 +1752,8 @@ object DI : Opcode(0xF3) {
 object PUSH_AF: Opcode(0xF5) {
     override fun execute(cpu: CPU, memory: Memory, registers: Registers) {
         registers.stackPointer--
-        memory.write(registers.stackPointer--, registers.accumulator.getHob())
-        memory.write(registers.stackPointer, registers.accumulator.getLob())
+        memory.write(registers.stackPointer--, registers.accumulator.getLob())
+        memory.write(registers.stackPointer, registers.getF().getLob())
     }
 }
 

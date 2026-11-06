@@ -13,8 +13,16 @@ class CPU(
     val registers = Registers()
 
     var halt = false
+    private var imeLogCount = 0
     //master interrupt enable flag
     var ime = false
+        set(value) {
+            if (field != value && imeLogCount < 60) {
+                imeLogCount++
+                logger.debug { "IME $field -> $value (PC=0x${registers.programCounter.toInt().toHexCode(4)})" }
+            }
+            field = value
+        }
 
     private val location: Int get() = registers.programCounter.toInt() - 1
 
@@ -29,12 +37,17 @@ class CPU(
 
         //One second has passed
         if(diff >= 1000){
-            logger.debug { "Hz: $counter" }
+            logger.debug {
+                "Hz: $counter PC=0x${registers.programCounter.toInt().toHexCode(4)} IME=$ime halt=$halt " +
+                        "IE=0x${memory.read(0xFFFF).value.toHexCode()} IF=0x${memory.read(0xFF0F).value.toHexCode()} " +
+                        "FF85=0x${memory.read(0xFF85).value.toHexCode()} FFE1=0x${memory.read(0xFFE1).value.toHexCode()}"
+            }
             last = now
             counter = 0
         }
         counter++
 
+        handleInterruptions()
 
         //Run Cpu
         if(!halt){
@@ -44,6 +57,23 @@ class CPU(
         }
     }
 
+    private fun handleInterruptions() {
+        val flags = memory.read(0xFF0F).value.toInt()
+        val pending = flags and memory.read(0xFFFF).value.toInt() and 0x1F
+        if (pending == 0) return
+
+        halt = false
+        if (!ime) return
+
+        val bit = Integer.numberOfTrailingZeros(pending)
+        ime = false
+        memory.write(0xFF0F, (flags and (1 shl bit).inv()).toUByte())
+
+        registers.stackPointer--
+        memory.write(registers.stackPointer--, registers.programCounter.getHob())
+        memory.write(registers.stackPointer, registers.programCounter.getLob())
+        registers.programCounter = (0x40 + 8 * bit).toUInt()
+    }
 
     init {
         //Register all the opcodes
@@ -346,9 +376,6 @@ class CPU(
 
     private fun decode(){
         try {
-            if(location==0x95){
-                println()
-            }
             decodedOpcode = registeredOpcodes[opcode]
 //            if(loc>=0x1a)logger.debug { "Location: 0x${loc.toHexCode(4)}, Decoded: 0x${opcode.toHexCode()} $decodedOpcode" }
         }catch(e: IndexOutOfBoundsException){

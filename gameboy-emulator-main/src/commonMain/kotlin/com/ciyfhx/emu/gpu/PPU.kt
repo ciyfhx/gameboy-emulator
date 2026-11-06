@@ -50,12 +50,13 @@ class PPU(
                 if(xClock == 19) {
                     fetcher.reset()
                     pixelFifo.reset()
+                    lcd.startLine(ly.toInt())
                     stat.transferMode()
                 }
             }
             STAT.ModeFlag.TRANSFERRING_DATA -> {
                 pixelTransfer()
-                if(lcd.x == 156){
+                if(lcd.x == lcd.width){
 //                    fetcher.clearPixelBuffer()
 //                    pixelFifo.reset()
                     stat.hBlankMode()
@@ -67,6 +68,8 @@ class PPU(
                     incrementLy()
                     if(ly.toInt() == 144){
                         stat.vBlankMode()
+                        requestInterrupt(0)
+                        lcd.refresh()
                     }else{
                         stat.oamMode()
                     }
@@ -136,6 +139,11 @@ class PPU(
 
     private fun v_blank(){
         fetcher.reset()
+    }
+
+    private fun requestInterrupt(bit: Int) {
+        val flags = memory.read(0xFF0F).value.toInt()
+        memory.write(0xFF0F, (flags or (1 shl bit)).toUByte())
     }
 
     override fun initMemory(memory: Memory) {
@@ -267,11 +275,6 @@ class PPU(
             val dataAddress = tileAddress + 2 * yLine
             val d1 = ppu.memory.read(dataAddress).value
             val d2 = ppu.memory.read(dataAddress + 1).value
-
-            if(yLine==0){
-                println()
-            }
-
             for(index in pixelBuffer.indices){
                 val i = (index % 8)
                 val offset = 7 - i

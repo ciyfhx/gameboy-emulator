@@ -19,12 +19,14 @@ class GameBoyMemory : Memory(0x10000) {
     val videoRam: VideoRam
         get() = _videoRam
 
+    val joypad = Joypad()
+
     init {
         _videoRam = VideoRam()
         _ppu = PPU(_videoRam)
         //Define memory region
         registerMemoryMapper(
-            GameRom("E:\\Programming\\2026\\gameboy-emulator\\roms\\bgbtest.gb"),
+            GameRom("E:\\Programming\\2026\\gameboy-emulator\\roms\\Tetris (Japan) (En).gb"),
             MemoryRegion(0x0000..0x7FFF)
         )
         registerMemoryMapper(_videoRam, MemoryRegion(0x8000..0x9FFF))
@@ -33,12 +35,17 @@ class GameBoyMemory : Memory(0x10000) {
             OAMRam(),
             MemoryRegion(0xFE00..0xFE9F)
         )
-        registerMemoryMapper(Joypad(), MemoryRegion(0xFF00..0xFF00))
+        registerMemoryMapper(joypad, MemoryRegion(0xFF00..0xFF00))
         registerMemoryMapper(Audio(), MemoryRegion(0xFF10..0xFF26))
 
         registerMemoryMapper(_ppu, MemoryRegion(0xFF40..0xFF4B))
         registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xFF80..0xFFFE))//HRAM
-//        registerMemoryMapper(DMA(), MemoryRegion(0xFF46..0xFF46))
+
+
+        registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xC000..0xDFFF))//WRAM
+        registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xFF01..0xFF0F))//contains IF (0xFF0F)
+        registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xFF27..0xFF3F))//wave RAM
+        registerMemoryMapper(DefaultMemoryMapper(), MemoryRegion(0xFFFF..0xFFFF))//IE
     }
 
 

@@ -9,6 +9,7 @@ import androidx.compose.ui.window.application
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ciyfhx.emu.viewer.*
 
 class ApplicationState {
@@ -75,9 +76,13 @@ fun main() =
         MaterialTheme {
             ViewModelStoreOwnerProvider {
                 applicationState.debugScreen?.let { DebugScreen(it) }
-                applicationState.display?.let { DisplayScreen(it) }
-//                applicationState.vramViewer?.let { VRAMViewerScreen(it) }
-                applicationState.backgroundMapViewer?.let { BackgroundMapViewerScreen(it) }
+                applicationState.display?.let { display ->
+                    val viewModel = viewModel<GameBoyEmulationViewModel>()
+                    val input = remember(viewModel) { InputState(viewModel::onKeyEvent) }
+                    DisplayScreen(display, input)
+                }
+                applicationState.vramViewer?.let { VRAMViewerScreen(it) }
+//                applicationState.backgroundMapViewer?.let { BackgroundMapViewer(it) }
             }
         }
     }

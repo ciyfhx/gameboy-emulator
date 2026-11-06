@@ -1,35 +1,53 @@
 package com.ciyfhx.emu.mapper
 
 import com.ciyfhx.emu.Memory
-import com.ciyfhx.emu.ReadOnlyMemoryMapper
+import com.ciyfhx.emu.MemoryMapper
+import java.util.concurrent.CopyOnWriteArraySet
 
-class Joypad : ReadOnlyMemoryMapper() {
+class Joypad : MemoryMapper {
 
+    enum class JoypadEvent(val line: Int, val isDirection: Boolean) {
+        A(0, false),
+        B(1, false),
+        SELECT(2, false),
+        START(3, false),
+        RIGHT(0, true),
+        LEFT(1, true),
+        UP(2, true),
+        DOWN(3, true),
+    }
 
-    private var P15 = false // Select Buttons
-    private var P14 = false // Select D-Pad
+    //unused
+    @Volatile private var P15 = false
+    @Volatile private var P14 = false
 
-    private var P13 = false // Start or Down
-    private var P12 = false // Select or Up
-    private var P11 = false // B or Left
-    private var P10 = false // A or Right
+    private val pressed = CopyOnWriteArraySet<JoypadEvent>()
 
+    fun setButton(button: JoypadEvent, isPressed: Boolean) {
+        if (isPressed) pressed.add(button) else pressed.remove(button)
+    }
 
     override fun read(memoryEntryRead: Memory.MemoryEntry): Memory.MemoryEntry {
         memoryEntryRead.value = p1Register()
         return memoryEntryRead
     }
 
-    private fun p1Register(): UByte{
-        return (
-                if(P15) 0x20 else 0 or
-                if(P14) 0x10 else 0 or
+    override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
+        val value = memoryEntryWrite.value.toInt()
+        P15 = (value and 0x20) == 0
+        P14 = (value and 0x10) == 0
+        return memoryEntryWrite
+    }
 
-                if(P13) 0x08 else 0 or
-                if(P12) 0x04 else 0 or
-                if(P11) 0x02 else 0 or
-                if(P10) 0x01 else 0
-                ).toUByte().inv()
+    private fun p1Register(): UByte {
+        var register = 0xFF
+        if (P15) register = register and 0x20.inv()
+        if (P14) register = register and 0x10.inv()
+        for (button in pressed) {
+            val selected = if (button.isDirection) P14 else P15
+            if (selected) register = register and (1 shl button.line).inv()
+        }
+        return register.toUByte()
     }
 
 }

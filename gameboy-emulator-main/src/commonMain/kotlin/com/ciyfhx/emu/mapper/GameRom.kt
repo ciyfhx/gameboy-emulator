@@ -48,6 +48,10 @@ class GameRom(
         return memoryEntryRead
     }
 
+    override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
+        return memory.read(memoryEntryWrite.address)
+    }
+
     private fun checkBootRomEnabled(): Boolean{
         val bootRomMemoryEntry = memory.read(0xFF50).value
         return bootRomMemoryEntry == 0.toUByte()

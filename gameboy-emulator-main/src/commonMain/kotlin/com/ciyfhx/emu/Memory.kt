@@ -28,8 +28,10 @@ abstract class ReadOnlyMemoryMapper: MemoryMapper {
     }
 
     override fun write(memoryEntryWrite: Memory.MemoryEntry): Memory.MemoryEntry {
-        logger.error(ReadOnlyMemoryException(memoryEntryWrite)){
-            "Tried to access read-only memory at 0x${memoryEntryWrite.address.toHexCode(4)} with value 0x${memoryEntryWrite.value.toHexCode()}"
+        val pc = memory.cpu.registers.programCounter.toInt()
+        logger.error(ReadOnlyMemoryException(memoryEntryWrite)) {
+            "Tried to access read-only memory at 0x${memoryEntryWrite.address.toHexCode(4)} " +
+                    "with value 0x${memoryEntryWrite.value.toHexCode()} (PC after instruction = 0x${pc.toHexCode(4)})"
         }
         memory.cpu.stop()
         return memoryEntryWrite

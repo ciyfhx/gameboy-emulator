@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Window
@@ -27,10 +28,17 @@ class DisplayScreenWindowState(
     fun close() = close(this)
 }
 
+class InputState(
+    val onKeyEvent: (KeyEvent) -> Boolean,
+){
+    fun keyEvent(keyEvent: KeyEvent) = onKeyEvent(keyEvent)
+}
+
 @Composable
-fun DisplayScreen(state: DisplayScreenWindowState) =
+fun DisplayScreen(state: DisplayScreenWindowState, inputState: InputState) =
     Window(
         onCloseRequest = state::close,
+        onKeyEvent = inputState::keyEvent,
         title = state.title,
         state = rememberWindowState(width = 1000.dp, height = 800.dp)
     ) {
@@ -47,7 +55,7 @@ fun Display() {
 }
 
 private fun DrawScope.drawPixelArray(pixelArray: Array<Array<Pixel>>) {
-    val cellSize = size.width / pixelArray.size.toFloat()
+    val cellSize = minOf(size.width / pixelArray[0].size, size.height / pixelArray.size)
     for (row in pixelArray.indices) {
         for (col in pixelArray[row].indices) {
             val color = when (pixelArray[row][col]) {

@@ -14,18 +14,14 @@ class LCD (
 
     private val listeners = mutableListOf<() -> Unit>()
 
-    fun push(pixel: Pixel){
-        pixels[_y][_x] = pixel
-        _x++
-        if(_x == width){
-            _y++
-            _x = 0
-            if(_y == height){
-                _y = 0
-                listeners.forEach{listener -> listener()}
-            }
-        }
+    // LCD.kt: replace push() with these
+    fun startLine(y: Int) { _y = y; _x = 0 }
+
+    fun push(pixel: Pixel) {
+        if (_x < width) pixels[_y][_x++] = pixel
     }
+
+    fun refresh() = listeners.forEach { it() }
 
     fun addRefreshListener(listener: () -> Unit){
         listeners += listener

@@ -3,9 +3,15 @@ package com.ciyfhx.emu
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.lifecycle.ViewModel
 import com.ciyfhx.emu.gpu.LCD
 import com.ciyfhx.emu.gpu.Tile
+import com.ciyfhx.emu.mapper.Joypad.JoypadEvent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -68,6 +74,27 @@ class GameBoyEmulationViewModel : ViewModel() {
     fun stop(){
         logger.info { "Stopping Emulation!" }
         _memory.value.stop()
+    }
+
+    fun onKeyEvent(keyEvent: KeyEvent): Boolean {
+        logger.debug { "Key event: ${keyEvent.key} ${keyEvent.type}" }
+        val button = when (keyEvent.key) {
+            Key.DirectionUp -> JoypadEvent.UP
+            Key.DirectionDown -> JoypadEvent.DOWN
+            Key.DirectionLeft -> JoypadEvent.LEFT
+            Key.DirectionRight -> JoypadEvent.RIGHT
+            Key.Z -> JoypadEvent.A
+            Key.X -> JoypadEvent.B
+            Key.Enter -> JoypadEvent.START
+            Key.Backspace -> JoypadEvent.SELECT
+            else -> return false
+        }
+        when (keyEvent.type) {
+            KeyEventType.KeyDown -> memory.value.joypad.setButton(button, true)
+            KeyEventType.KeyUp -> memory.value.joypad.setButton(button, false)
+            else -> return false
+        }
+        return true
     }
 
 
